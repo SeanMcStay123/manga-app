@@ -3,7 +3,7 @@ import java.lang.System.exit // this resolved the import error
 fun mainMenu(): Int {
     println("")
     println("--------------------")
-    println("MANGA COLLECTION APP")
+    println("MANGA APP")
     println("--------------------")
     println("MANGA MENU")
     println(" 1) Add a Character")
