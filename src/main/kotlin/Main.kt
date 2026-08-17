@@ -1,19 +1,21 @@
 import java.lang.System.exit // this resolved the import error
 
 fun mainMenu(): Int {
-    println("")
-    println("--------------------")
-    println("MANGA APP")
-    println("--------------------")
-    println("MANGA MENU")
-    println(" 1) Add a Character")
-    println(" 2) List all Characters")
-    println(" 3) Update a Character")
-    println(" 4) Delete a Character")
-    println("--------------------")
-    println(" 0) Exit")
-    println("--------------------")
-    print("==>> ")
+    print(
+        """
+        > --------------------------------
+        > | MANGA APP                     |
+        > --------------------------------
+        > | MANGA MENU                    |
+        > |  1) Add a Character           |
+        > |  2) List all Characters       |
+        > |  3) Update a Character        |
+        > |  4) Delete a Character        |
+        > --------------------------------
+        > |  0) Exit                      |
+        > --------------------------------
+        > ==>> """.trimMargin(">")
+    )
     return readlnOrNull()?.toIntOrNull() ?: -1
 }
 
@@ -26,7 +28,7 @@ fun runMenu() {
             3 -> updateCharacter()
             4 -> deleteCharacter()
             0 -> exitApp()
-            else -> println("Invalid option entered: " + option)
+            else -> println("Invalid option entered: ${option}")
         }
     } while (true)
 }
@@ -51,6 +53,7 @@ fun exitApp() {
     println("Exiting...bye")
     exit(0) // 0 means exit code
 }
+
 
 fun main() {
     runMenu()
