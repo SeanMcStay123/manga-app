@@ -1,4 +1,8 @@
-import java.lang.System.exit // this resolved the import error
+import java.lang.System.exit // this resolved the import error //
+import utils.readNextInt
+
+
+
 
 fun mainMenu(): Int {
     print(
@@ -14,9 +18,9 @@ fun mainMenu(): Int {
         > --------------------------------
         > |  0) Exit                      |
         > --------------------------------
-        > ==>> """.trimMargin(">")
-    )
-    return readlnOrNull()?.toIntOrNull() ?: -1
+        >""".trimMargin(">"))
+    return readNextInt(" > ==>>")
+
 }
 
 fun runMenu() {
