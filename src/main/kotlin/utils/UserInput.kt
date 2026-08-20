@@ -49,8 +49,9 @@ fun readNextChar(prompt: String?): Char {
         try {
             print(prompt)
             return readln().first()
-        } catch (e: NumberFormatException) {
+        } catch (e: Exception) { // deleted NumberFormat to widen the catch of inputs and give less errors
             System.err.println("\tEnter a character please.")
         }
     } while (true)
 }
+
