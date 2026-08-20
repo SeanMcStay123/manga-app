@@ -130,4 +130,29 @@ class CharacterAPITest {
         assertTrue(ratingString.contains("son goku"))
         assertTrue(!ratingString.contains("eren yeager"))
     }
+
+    @Test
+    fun `findFavoriteCharacter returns null when list is empty`() {
+        assertEquals(null, emptyCharacters!!.findFavoriteCharacter())
+    }
+
+    @Test
+    fun `findFavoriteCharacter returns a character with the highest rating`() {
+        val favorite = populatedCharacters!!.findFavoriteCharacter()
+        assertEquals(5, favorite!!.characterRating)
+    }
+
+    @Test
+    fun `listCharactersByMangaSeries returns No Characters message when no series matches`() {
+        assertEquals(0, populatedCharacters!!.numberOfCharactersInSeries("Bleach"))
+        assertTrue(populatedCharacters!!.listCharactersByMangaSeries("Bleach").lowercase().contains("no characters found"))
+    }
+
+    @Test
+    fun `listCharactersByMangaSeries returns only Characters from that series`() {
+        assertEquals(1, populatedCharacters!!.numberOfCharactersInSeries("Naruto"))
+        val seriesString = populatedCharacters!!.listCharactersByMangaSeries("Naruto").lowercase()
+        assertTrue(seriesString.contains("naruto uzumaki"))
+        assertTrue(!seriesString.contains("son goku"))
+    }
 }
