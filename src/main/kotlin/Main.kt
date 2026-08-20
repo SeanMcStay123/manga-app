@@ -5,6 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging // kotlin logging found here:
 import models.Character
 import utils.readNextLine // alt enter fixed this import bug
 
+
 private val characterAPI = CharacterAPI() // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
 private val logger = KotlinLogging.logger {} // anything now with the logger added instead of println shows as "INFO" in the terminal, except exitapp as its println still
 
