@@ -1,5 +1,7 @@
-import java.lang.System.exit // this resolved the import error //
+import java.lang.System.exit // this resolved the import error
 import utils.readNextInt
+import io.github.oshai.kotlinlogging.KotlinLogging // kotlin logging found here: https://mvnrepository.com/artifact/io.github.oshai/kotlin-logging-jvm
+private val logger = KotlinLogging.logger {} // anything now with the logger added instead of println shows as "INFO" in the terminal, except exitapp as its println still
 
 
 
@@ -38,19 +40,16 @@ fun runMenu() {
 }
 
 fun addCharacter() {
-    println("You chose Add Character")
+    logger.info { "addCharacter() function invoked" }
 }
-
 fun listCharacters() {
-    println("You chose List Characters")
+    logger.info { "listCharacters() function invoked" }
 }
-
 fun updateCharacter() {
-    println("You chose Update Character")
+    logger.info { "updateCharacter() function invoked" }
 }
-
 fun deleteCharacter() {
-    println("You chose Delete Character")
+    logger.info { "deleteCharacter() function invoked" }
 }
 
 fun exitApp() {
