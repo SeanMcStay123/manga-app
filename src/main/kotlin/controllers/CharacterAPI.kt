@@ -20,4 +20,20 @@ class CharacterAPI {
             listOfCharacters
         }
     }
+
+
+    fun numberOfCharacters(): Int { // added two helper methods to help with CharacterAPITest
+        return characters.size
+    }
+
+    fun findCharacter(index: Int): Character? {
+        return if (isValidListIndex(index, characters)) {
+            characters[index]
+        } else null
+    }
+
+    //utility method to determine if an index is valid in a list.
+    fun isValidListIndex(index: Int, list: List<Any>): Boolean {
+        return (index >= 0 && index < list.size)
+    }
 }
