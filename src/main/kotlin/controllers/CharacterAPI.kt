@@ -20,6 +20,7 @@ class CharacterAPI {
             }
             listOfCharacters
         }
+
     }
 
 
@@ -63,8 +64,7 @@ class CharacterAPI {
             listOfArchivedCharacters
         }
     }
-    fun numberOfArchivedCharacters(): Int {
-// helper method to help decide how many archived characters there are
+    fun numberOfArchivedCharacters(): Int {  // helper method to help decide how many archived characters there are
         var count = 0
         for (character in characters) {
             if (character.isCharacterArchived) {
@@ -73,11 +73,32 @@ class CharacterAPI {
         }
         return count
     }
-    fun numberOfActiveCharacters(): Int {
-// helper method to help decide how many active characters there are
+    fun numberOfActiveCharacters(): Int {  // helper method to help decide how many active characters there are
         var count = 0
         for (character in characters) {
             if (!character.isCharacterArchived) {
+                count++
+            }
+        }
+        return count
+    }
+    fun listCharactersBySelectedRating(rating: Int): String {
+        return if (numberOfCharactersByRating(rating) == 0) {
+            "No characters with rating ${rating} stored"
+        } else {
+            var listOfCharacters = ""
+            for (i in characters.indices) {
+                if (characters[i].characterRating == rating) {
+                    listOfCharacters += "${i}: ${characters[i]} \n"
+                }
+            }
+            listOfCharacters
+        }
+    }
+    fun numberOfCharactersByRating(rating: Int): Int {  // helper method to decide how many characters there are of a specific rating
+        var count = 0
+        for (character in characters) {
+            if (character.characterRating == rating) {
                 count++
             }
         }
