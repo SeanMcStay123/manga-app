@@ -33,8 +33,54 @@ class CharacterAPI {
         } else null
     }
 
-    //utility method to determine if an index is valid in a list.
+    // utility method to determine if an index is valid in a list.
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
+    }
+    fun listActiveCharacters(): String { // returns only characters where isCharacterArchived is false
+        return if (numberOfActiveCharacters() == 0) {
+            "No active characters stored"
+        } else {
+            var listOfActiveCharacters = ""
+            for (i in characters.indices) {
+                if (!characters[i].isCharacterArchived) { // skip archived ones
+                    listOfActiveCharacters += "${i}: ${characters[i]} \n"
+                }
+            }
+            listOfActiveCharacters
+        }
+    }
+    fun listArchivedCharacters(): String { // returns only characters where isCharacterArchived is true
+        return if (numberOfArchivedCharacters() == 0) {
+            "No archived characters stored"
+        } else {
+            var listOfArchivedCharacters = ""
+            for (i in characters.indices) {
+                if (characters[i].isCharacterArchived) { // only archived ones
+                    listOfArchivedCharacters += "${i}: ${characters[i]} \n"
+                }
+            }
+            listOfArchivedCharacters
+        }
+    }
+    fun numberOfArchivedCharacters(): Int {
+// helper method to help decide how many archived characters there are
+        var count = 0
+        for (character in characters) {
+            if (character.isCharacterArchived) {
+                count++
+            }
+        }
+        return count
+    }
+    fun numberOfActiveCharacters(): Int {
+// helper method to help decide how many active characters there are
+        var count = 0
+        for (character in characters) {
+            if (!character.isCharacterArchived) {
+                count++
+            }
+        }
+        return count
     }
 }

@@ -91,4 +91,26 @@ class CharacterAPITest {
         }
 
     }
+    @Test
+    fun `listActiveCharacters returns No Active Characters Stored message when ArrayList is empty`() { // confirms the empty-list edge case for the active filter
+        assertEquals(0, emptyCharacters!!.numberOfActiveCharacters())
+        assertTrue(emptyCharacters!!.listActiveCharacters().lowercase().contains("no active characters"))
+    }
+    @Test
+    fun `listActiveCharacters returns Active Characters when ArrayList has active characters stored`() {  // proves the filter actually works and list has 5 characters, but none archived so the message should still show
+        assertEquals(5, populatedCharacters!!.numberOfActiveCharacters())
+        val activeString = populatedCharacters!!.listActiveCharacters().lowercase()
+        assertTrue(activeString.contains("naruto uzumaki"))
+        assertTrue(activeString.contains("eren yeager"))
+    }
+    @Test
+    fun `listArchivedCharacters returns No Archived Characters Stored message when ArrayList is empty`() {
+        assertEquals(0, emptyCharacters!!.numberOfArchivedCharacters())
+        assertTrue(emptyCharacters!!.listArchivedCharacters().lowercase().contains("no archived characters"))
+    }
+    @Test
+    fun `listArchivedCharacters returns No Archived Characters Stored message when populated list has no archived characters`() {
+        assertEquals(0, populatedCharacters!!.numberOfArchivedCharacters())
+        assertTrue(populatedCharacters!!.listArchivedCharacters().lowercase().contains("no archived characters"))
+    }
 }
