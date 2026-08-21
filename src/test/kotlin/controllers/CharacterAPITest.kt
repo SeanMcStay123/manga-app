@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals // checks two values match
 import org.junit.jupiter.api.Nested // groups related tests together
 import org.junit.jupiter.api.Assertions.assertNull // checks that a value is null, e.g. deleting/updating something that doesn't exist
 import org.junit.jupiter.api.Assertions.assertFalse // checks something is false
+import persistence.JSONSerializer
 import persistence.XMLSerializer
 import java.io.File
 
@@ -238,6 +239,44 @@ class CharacterAPITest {
             loadedCharacters.load()
 
             //Comparing the source of the characters (storingCharacters) with the XML loaded characters (loadedCharacters)
+            assertEquals(3, storingCharacters.numberOfCharacters())
+            assertEquals(3, loadedCharacters.numberOfCharacters())
+            assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
+            assertEquals(storingCharacters.findCharacter(0), loadedCharacters.findCharacter(0))
+            assertEquals(storingCharacters.findCharacter(1), loadedCharacters.findCharacter(1))
+            assertEquals(storingCharacters.findCharacter(2), loadedCharacters.findCharacter(2))
+        }
+
+        @Test
+        fun `saving and loading an empty collection in JSON doesn't crash app`() {
+            // Saving an empty characters.json file.
+            val storingCharacters = CharacterAPI(JSONSerializer(File("characters.json")))
+            storingCharacters.store()
+
+            //Loading the empty characters.json file into a new object
+            val loadedCharacters = CharacterAPI(JSONSerializer(File("characters.json")))
+            loadedCharacters.load()
+
+            //Comparing the source of the characters (storingCharacters) with the JSON loaded characters (loadedCharacters)
+            assertEquals(0, storingCharacters.numberOfCharacters())
+            assertEquals(0, loadedCharacters.numberOfCharacters())
+            assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
+        }
+
+        @Test
+        fun `saving and loading a loaded collection in JSON doesn't lose data`() {
+            // Storing 3 characters to the characters.json file.
+            val storingCharacters = CharacterAPI(JSONSerializer(File("characters.json")))
+            storingCharacters.add(naruto!!)
+            storingCharacters.add(luffy!!)
+            storingCharacters.add(goku!!)
+            storingCharacters.store()
+
+            //Loading characters.json into a different collection
+            val loadedCharacters = CharacterAPI(JSONSerializer(File("characters.json")))
+            loadedCharacters.load()
+
+            //Comparing the source of the characters (storingCharacters) with the JSON loaded characters (loadedCharacters)
             assertEquals(3, storingCharacters.numberOfCharacters())
             assertEquals(3, loadedCharacters.numberOfCharacters())
             assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
