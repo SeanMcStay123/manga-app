@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Assertions.assertEquals // checks two values match
 import org.junit.jupiter.api.Nested // groups related tests together
 import org.junit.jupiter.api.Assertions.assertNull // checks that a value is null, e.g. deleting/updating something that doesn't exist
 import org.junit.jupiter.api.Assertions.assertFalse // checks something is false
+import persistence.XMLSerializer
+import java.io.File
 
 class CharacterAPITest {
 
@@ -17,8 +19,8 @@ class CharacterAPITest {
     private var goku: Character? = null
     private var edward: Character? = null
     private var eren: Character? = null
-    private var populatedCharacters: CharacterAPI? = CharacterAPI()
-    private var emptyCharacters: CharacterAPI? = CharacterAPI()
+    private var populatedCharacters: CharacterAPI? = CharacterAPI(XMLSerializer(File("characters.xml")))
+    private var emptyCharacters: CharacterAPI? = CharacterAPI(XMLSerializer(File("empty-characters.xml")))
 
     @BeforeEach
     fun setup() { // runs before every test, resets test data
@@ -176,29 +178,72 @@ class CharacterAPITest {
             assertEquals(naruto, populatedCharacters!!.deleteCharacter(0))
             assertEquals(3, populatedCharacters!!.numberOfCharacters())
         }
-        @Nested
-        inner class UpdateCharacters {
-            @Test
-            fun `updating a character that does not exist returns false`(){
-                assertFalse(populatedCharacters!!.updateCharacter(6, Character("Updating Character", 2, "Bleach", false)))
-                assertFalse(populatedCharacters!!.updateCharacter(-1, Character("Updating Character", 2, "Bleach", false)))
-                assertFalse(emptyCharacters!!.updateCharacter(0, Character("Updating Character", 2, "Bleach", false)))
-            }
+    }
 
-            @Test
-            fun `updating a character that exists returns true and updates`() {
-                //check character 5 (index 4) exists and check the contents
-                assertEquals(eren, populatedCharacters!!.findCharacter(4))
-                assertEquals("Eren Yeager", populatedCharacters!!.findCharacter(4)!!.characterName)
-                assertEquals(3, populatedCharacters!!.findCharacter(4)!!.characterRating)
-                assertEquals("Attack on Titan", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
+    @Nested
+    inner class UpdateCharacters {
+        @Test
+        fun `updating a character that does not exist returns false`(){
+            assertFalse(populatedCharacters!!.updateCharacter(6, Character("Updating Character", 2, "Bleach", false)))
+            assertFalse(populatedCharacters!!.updateCharacter(-1, Character("Updating Character", 2, "Bleach", false)))
+            assertFalse(emptyCharacters!!.updateCharacter(0, Character("Updating Character", 2, "Bleach", false)))
+        }
 
-                //update character 5 with new information and ensure contents updated successfully
-                assertTrue(populatedCharacters!!.updateCharacter(4, Character("Updating Character", 2, "Bleach", false)))
-                assertEquals("Updating Character", populatedCharacters!!.findCharacter(4)!!.characterName)
-                assertEquals(2, populatedCharacters!!.findCharacter(4)!!.characterRating)
-                assertEquals("Bleach", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
-            }
+        @Test
+        fun `updating a character that exists returns true and updates`() {
+            //check character 5 (index 4) exists and check the contents
+            assertEquals(eren, populatedCharacters!!.findCharacter(4))
+            assertEquals("Eren Yeager", populatedCharacters!!.findCharacter(4)!!.characterName)
+            assertEquals(3, populatedCharacters!!.findCharacter(4)!!.characterRating)
+            assertEquals("Attack on Titan", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
+
+            //update character 5 with new information and ensure contents updated successfully
+            assertTrue(populatedCharacters!!.updateCharacter(4, Character("Updating Character", 2, "Bleach", false)))
+            assertEquals("Updating Character", populatedCharacters!!.findCharacter(4)!!.characterName)
+            assertEquals(2, populatedCharacters!!.findCharacter(4)!!.characterRating)
+            assertEquals("Bleach", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
+        }
+    }
+
+    @Nested
+    inner class PersistenceTests {
+
+        @Test
+        fun `saving and loading an empty collection in XML doesn't crash app`() {
+            // Saving an empty characters.xml file.
+            val storingCharacters = CharacterAPI(XMLSerializer(File("characters.xml")))
+            storingCharacters.store()
+
+            //Loading the empty characters.xml file into a new object
+            val loadedCharacters = CharacterAPI(XMLSerializer(File("characters.xml")))
+            loadedCharacters.load()
+
+            //Comparing the source of the characters (storingCharacters) with the XML loaded characters (loadedCharacters)
+            assertEquals(0, storingCharacters.numberOfCharacters())
+            assertEquals(0, loadedCharacters.numberOfCharacters())
+            assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
+        }
+
+        @Test
+        fun `saving and loading a loaded collection in XML doesn't lose data`() {
+            // Storing 3 characters to the characters.xml file.
+            val storingCharacters = CharacterAPI(XMLSerializer(File("characters.xml")))
+            storingCharacters.add(naruto!!)
+            storingCharacters.add(luffy!!)
+            storingCharacters.add(goku!!)
+            storingCharacters.store()
+
+            //Loading characters.xml into a different collection
+            val loadedCharacters = CharacterAPI(XMLSerializer(File("characters.xml")))
+            loadedCharacters.load()
+
+            //Comparing the source of the characters (storingCharacters) with the XML loaded characters (loadedCharacters)
+            assertEquals(3, storingCharacters.numberOfCharacters())
+            assertEquals(3, loadedCharacters.numberOfCharacters())
+            assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
+            assertEquals(storingCharacters.findCharacter(0), loadedCharacters.findCharacter(0))
+            assertEquals(storingCharacters.findCharacter(1), loadedCharacters.findCharacter(1))
+            assertEquals(storingCharacters.findCharacter(2), loadedCharacters.findCharacter(2))
         }
     }
 }

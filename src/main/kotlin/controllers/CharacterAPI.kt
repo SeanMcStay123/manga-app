@@ -9,6 +9,7 @@ class CharacterAPI(serializerType: Serializer){
     private var characters = ArrayList<Character>()
     private var serializer: Serializer = serializerType
 
+
     fun add(character: Character): Boolean {
         return characters.add(character) // ArrayList.add() is built-in, returns true if the item was added successfully
     }
