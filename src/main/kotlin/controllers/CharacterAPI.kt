@@ -104,14 +104,12 @@ class CharacterAPI {
         }
         return count
     }
-    fun findFavoriteCharacter(): Character? {
-        // returns the character with the highest characterRating, or null if empty
-        // uses maxByOrNull(), see: https://kotlinlang.org/docs/collection-aggregate.html
+    fun findFavoriteCharacter(): Character? { // returns the character with the highest characterRating, or null if empty
+        // uses maxByOrNull(), source https://kotlinlang.org/docs/collection-aggregate.html
         return characters.maxByOrNull { it.characterRating }
     }
 
-    fun listCharactersByMangaSeries(series: String): String {
-        // uses filter() with a lambda predicate, see: https://kotlinlang.org/docs/collection-filtering.html
+    fun listCharactersByMangaSeries(series: String): String { // uses filter() with a lambda predicate, source https://kotlinlang.org/docs/collection-filtering.html
         val matches = characters.filter { it.mangaSeries.equals(series, ignoreCase = true) }
         return if (matches.isEmpty()) {
             "No characters found for manga series: $series"
@@ -127,5 +125,12 @@ class CharacterAPI {
     fun numberOfCharactersInSeries(series: String): Int {
         // uses count() with a predicate, see: https://kotlinlang.org/docs/collection-aggregate.html
         return characters.count { it.mangaSeries.equals(series, ignoreCase = true) }
+    }
+
+
+    fun deleteCharacter(indexToDelete: Int): Character? { // verifies index first, then removes and returns the deleted character (null if invalid)
+        return if (isValidListIndex(indexToDelete, characters)) {
+            characters.removeAt(indexToDelete)
+        } else null
     }
 }

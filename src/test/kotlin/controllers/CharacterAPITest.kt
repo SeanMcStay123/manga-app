@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.assertEquals // checks two values match, e.g. count or object comparisons in tests below
 import org.junit.jupiter.api.Nested // lets you group related tests into inner classes for cleaner test output
+import org.junit.jupiter.api.Assertions.assertNull
 
 class CharacterAPITest {
 
@@ -154,5 +155,25 @@ class CharacterAPITest {
         val seriesString = populatedCharacters!!.listCharactersByMangaSeries("Naruto").lowercase()
         assertTrue(seriesString.contains("naruto uzumaki"))
         assertTrue(!seriesString.contains("son goku"))
+    }
+    @Nested // groups both "delete" tests together in the test results terminal panel
+    inner class DeleteCharacters {
+
+        @Test
+        fun `deleting a Character that does not exist, returns null`() {
+            assertNull(emptyCharacters!!.deleteCharacter(0))
+            assertNull(populatedCharacters!!.deleteCharacter(-1))
+            assertNull(populatedCharacters!!.deleteCharacter(5))
+        }
+
+        @Test
+        fun `deleting a character that exists deletes and returns deleted object`() {
+            assertEquals(5, populatedCharacters!!.numberOfCharacters())
+            assertEquals(eren, populatedCharacters!!.deleteCharacter(4))
+            assertEquals(4, populatedCharacters!!.numberOfCharacters())
+            assertEquals(naruto, populatedCharacters!!.deleteCharacter(0))
+            assertEquals(3, populatedCharacters!!.numberOfCharacters())
+        }
+
     }
 }
