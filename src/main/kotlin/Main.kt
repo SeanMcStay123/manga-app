@@ -3,10 +3,12 @@ import java.lang.System.exit // this resolved the import error
 import utils.readNextInt
 import io.github.oshai.kotlinlogging.KotlinLogging // kotlin logging found here: https://mvnrepository.com/artifact/io.github.oshai/kotlin-logging-jvm
 import models.Character
+import persistence.XMLSerializer // imports the new character api with XMLSerializer to stop errors
 import utils.readNextLine // alt enter fixed this import bug
+import java.io.File // resolves error in character where "XMLSerializer( " File " " was showing as red
 
 
-private val characterAPI = CharacterAPI() // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
+private val characterAPI = CharacterAPI(XMLSerializer(File("characters.xml"))) // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
 private val logger = KotlinLogging.logger {} // anything now with the logger added instead of println shows as "INFO" in the terminal, except exitapp as its println still
 
 fun mainMenu(): Int {
@@ -20,6 +22,8 @@ fun mainMenu(): Int {
         > |  2) List all Characters       |
         > |  3) Update a Character        |
         > |  4) Delete a Character        |
+        > |  5) Save Characters           |
+        > |  6) Load Characters           |
         > --------------------------------
         > |  0) Exit                      |
         > --------------------------------
@@ -36,6 +40,8 @@ fun runMenu() {
             2 -> listCharacters()
             3 -> updateCharacter()
             4 -> deleteCharacter()
+            5 -> save()
+            6 -> load()
             0 -> exitApp()
             else -> println("Invalid option entered: ${option}")
         }
@@ -91,6 +97,22 @@ fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
             }
         }
     }
+
+fun save() { // writes the character collection to file using the serializer
+    try {
+        characterAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() { // reads the character collection and replaces whats in memory
+    try {
+        characterAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
+}
 
 fun exitApp() {
     println("Exiting...bye")
