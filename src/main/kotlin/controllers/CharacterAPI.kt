@@ -1,10 +1,14 @@
 package controllers
 
 import models.Character
+import persistence.Serializer
 
 
-class CharacterAPI {
+class CharacterAPI(serializerType: Serializer){
+
     private var characters = ArrayList<Character>()
+    private var serializer: Serializer = serializerType
+
 
     fun add(character: Character): Boolean {
         return characters.add(character) // ArrayList.add() is built-in, returns true if the item was added successfully
@@ -151,6 +155,16 @@ class CharacterAPI {
 
     fun isValidIndex(index: Int): Boolean { // wraps isValidListIndex so Main.kt can check an index before prompting for update details
         return isValidListIndex(index, characters)
+    }
+
+    @Throws(Exception::class)
+    fun load() {
+        characters = serializer.read() as ArrayList<Character>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(characters)
     }
 
 }
