@@ -1,13 +1,14 @@
 package controllers
 
 import models.Character
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.assertEquals // checks two values match, e.g. count or object comparisons in tests below
-import org.junit.jupiter.api.Nested // lets you group related tests into inner classes for cleaner test output
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.AfterEach // runs after every test, used to reset/clear test data
+import org.junit.jupiter.api.Assertions.assertTrue // checks something is true
+import org.junit.jupiter.api.BeforeEach // sets up data before each test
+import org.junit.jupiter.api.Test // marks a function as a test that JUnit will run
+import org.junit.jupiter.api.Assertions.assertEquals // checks two values match
+import org.junit.jupiter.api.Nested // groups related tests together
+import org.junit.jupiter.api.Assertions.assertNull // checks that a value is null, e.g. deleting/updating something that doesn't exist
+import org.junit.jupiter.api.Assertions.assertFalse // checks something is false
 
 class CharacterAPITest {
 
@@ -156,6 +157,7 @@ class CharacterAPITest {
         assertTrue(seriesString.contains("naruto uzumaki"))
         assertTrue(!seriesString.contains("son goku"))
     }
+
     @Nested // groups both "delete" tests together in the test results terminal panel
     inner class DeleteCharacters {
 
@@ -174,6 +176,29 @@ class CharacterAPITest {
             assertEquals(naruto, populatedCharacters!!.deleteCharacter(0))
             assertEquals(3, populatedCharacters!!.numberOfCharacters())
         }
+        @Nested
+        inner class UpdateCharacters {
+            @Test
+            fun `updating a character that does not exist returns false`(){
+                assertFalse(populatedCharacters!!.updateCharacter(6, Character("Updating Character", 2, "Bleach", false)))
+                assertFalse(populatedCharacters!!.updateCharacter(-1, Character("Updating Character", 2, "Bleach", false)))
+                assertFalse(emptyCharacters!!.updateCharacter(0, Character("Updating Character", 2, "Bleach", false)))
+            }
 
+            @Test
+            fun `updating a character that exists returns true and updates`() {
+                //check character 5 (index 4) exists and check the contents
+                assertEquals(eren, populatedCharacters!!.findCharacter(4))
+                assertEquals("Eren Yeager", populatedCharacters!!.findCharacter(4)!!.characterName)
+                assertEquals(3, populatedCharacters!!.findCharacter(4)!!.characterRating)
+                assertEquals("Attack on Titan", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
+
+                //update character 5 with new information and ensure contents updated successfully
+                assertTrue(populatedCharacters!!.updateCharacter(4, Character("Updating Character", 2, "Bleach", false)))
+                assertEquals("Updating Character", populatedCharacters!!.findCharacter(4)!!.characterName)
+                assertEquals(2, populatedCharacters!!.findCharacter(4)!!.characterRating)
+                assertEquals("Bleach", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
+            }
+        }
     }
 }
