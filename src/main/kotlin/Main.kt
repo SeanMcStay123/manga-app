@@ -3,12 +3,14 @@ import java.lang.System.exit // this resolved the import error
 import utils.readNextInt
 import io.github.oshai.kotlinlogging.KotlinLogging // kotlin logging found here: https://mvnrepository.com/artifact/io.github.oshai/kotlin-logging-jvm
 import models.Character
+import persistence.JSONSerializer
 import persistence.XMLSerializer // imports the new character api with XMLSerializer to stop errors
 import utils.readNextLine // alt enter fixed this import bug
 import java.io.File // resolves error in character where "XMLSerializer( " File " " was showing as red
 
 
-private val characterAPI = CharacterAPI(XMLSerializer(File("characters.xml"))) // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
+//private val characterAPI = CharacterAPI(XMLSerializer(File("characters.xml")))
+private val characterAPI = CharacterAPI(JSONSerializer(File("characters.json"))) // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
 private val logger = KotlinLogging.logger {} // anything now with the logger added instead of println shows as "INFO" in the terminal, except exitapp as its println still
 
 fun mainMenu(): Int {
