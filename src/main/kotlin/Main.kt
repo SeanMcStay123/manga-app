@@ -61,8 +61,17 @@ fun listCharacters() {
 fun updateCharacter() {
     logger.info { "updateCharacter() function invoked" }
 }
-fun deleteCharacter() {
-    logger.info { "deleteCharacter() function invoked" }
+fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
+    listCharacters()
+    if (characterAPI.numberOfCharacters() > 0) { // only ask the user to choose the character to delete if characters exist
+        val indexToDelete = readNextInt("Enter the index of the character to delete: ") // pass the index of the character to CharacterAPI for deleting and check for success.
+        val characterToDelete = characterAPI.deleteCharacter(indexToDelete)
+        if (characterToDelete != null) {
+            println("Delete Successful! Deleted character: ${characterToDelete.characterName}")
+        } else {
+            println("Delete NOT Successful")
+        }
+    }
 }
 
 fun exitApp() {
