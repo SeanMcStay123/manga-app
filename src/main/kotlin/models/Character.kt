@@ -1,8 +1,5 @@
 package models
 
-data class Character(val characterName: String,
-    val characterRating: Int,
-    val mangaSeries: String,
-    val isCharacterArchived: Boolean,){
-
+data class Character(var characterName: String, var characterRating: Int, var mangaSeries: String, var isCharacterArchived: Boolean) {
 }
+

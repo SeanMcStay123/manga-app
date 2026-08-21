@@ -58,13 +58,11 @@ fun addCharacter() { // collects name, rating and series name
 fun listCharacters() {
     println(characterAPI.listAllCharacters())
 }
-fun updateCharacter() {
-    logger.info { "updateCharacter() function invoked" }
-}
+
 fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
     listCharacters()
-    if (characterAPI.numberOfCharacters() > 0) { // only ask the user to choose the character to delete if characters exist
-        val indexToDelete = readNextInt("Enter the index of the character to delete: ") // pass the index of the character to CharacterAPI for deleting and check for success.
+    if (characterAPI.numberOfCharacters() > 0) { // only asks the user to choose the character to delete if characters exist
+        val indexToDelete = readNextInt("Enter the index of the character to delete: ")
         val characterToDelete = characterAPI.deleteCharacter(indexToDelete)
         if (characterToDelete != null) {
             println("Delete Successful! Deleted character: ${characterToDelete.characterName}")
@@ -73,6 +71,26 @@ fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
         }
     }
 }
+    fun updateCharacter() {  // logger.info { "updateCharacter() function invoked" }
+        listCharacters()
+        if (characterAPI.numberOfCharacters() > 0) { // only ask the user to choose the character if characters exist
+            val indexToUpdate = readNextInt("Enter the index of the character to update: ")
+            if (characterAPI.isValidIndex(indexToUpdate)) {
+                val characterName = readNextLine("Enter a name for the character: ")
+                val characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
+                val mangaSeries = readNextLine("Enter the manga series for the character: ")
+
+                // passes the index of the character and the new details to CharacterAPI for updating and check for success.
+                if (characterAPI.updateCharacter(indexToUpdate, Character(characterName, characterRating, mangaSeries, false))) {
+                    println("Update Successful")
+                } else {
+                    println("Update Failed")
+                }
+            } else {
+                println("There are no characters for this index number")
+            }
+        }
+    }
 
 fun exitApp() {
     println("Exiting...bye")
@@ -82,3 +100,4 @@ fun exitApp() {
 fun main() {
     runMenu()
 }
+

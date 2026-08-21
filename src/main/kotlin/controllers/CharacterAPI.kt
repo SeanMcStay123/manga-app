@@ -133,4 +133,24 @@ class CharacterAPI {
             characters.removeAt(indexToDelete)
         } else null
     }
+
+    fun updateCharacter(indexToUpdate: Int, character: Character?): Boolean { // finds the character by index, then overwrites its fields with the new details
+        val foundCharacter = findCharacter(indexToUpdate)
+
+        if ((foundCharacter != null) && (character != null)) {// if the character exists, use the character details passed as parameters to update the found character in the ArrayList.
+
+            foundCharacter.characterName = character.characterName
+            foundCharacter.characterRating = character.characterRating
+            foundCharacter.mangaSeries = character.mangaSeries
+            return true // update succeeded
+        }
+
+
+        return false // character not found, update failed
+    }
+
+    fun isValidIndex(index: Int): Boolean { // wraps isValidListIndex so Main.kt can check an index before prompting for update details
+        return isValidListIndex(index, characters)
+    }
+
 }
