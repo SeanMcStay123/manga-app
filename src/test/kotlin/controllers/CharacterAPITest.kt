@@ -308,4 +308,36 @@ class CharacterAPITest {
             assertFalse(populatedCharacters!!.archiveCharacter(0)) // second attempt should fail
         }
     }
-}
+
+        @Nested
+        inner class CountingMethods { // new tests added following the lambdas section
+
+            @Test
+            fun numberOfCharactersCalculatedCorrectly() {
+                assertEquals(5, populatedCharacters!!.numberOfCharacters())
+                assertEquals(0, emptyCharacters!!.numberOfCharacters())
+            }
+
+            @Test
+            fun numberOfArchivedCharactersCalculatedCorrectly() {
+                assertEquals(0, populatedCharacters!!.numberOfArchivedCharacters())
+                assertEquals(0, emptyCharacters!!.numberOfArchivedCharacters())
+            }
+
+            @Test
+            fun numberOfActiveCharactersCalculatedCorrectly() {
+                assertEquals(5, populatedCharacters!!.numberOfActiveCharacters())
+                assertEquals(0, emptyCharacters!!.numberOfActiveCharacters())
+            }
+
+            @Test
+            fun numberOfCharactersByRatingCalculatedCorrectly() {
+                assertEquals(0, populatedCharacters!!.numberOfCharactersByRating(1))
+                assertEquals(0, populatedCharacters!!.numberOfCharactersByRating(2))
+                assertEquals(1, populatedCharacters!!.numberOfCharactersByRating(3))
+                assertEquals(2, populatedCharacters!!.numberOfCharactersByRating(4))
+                assertEquals(2, populatedCharacters!!.numberOfCharactersByRating(5))
+                assertEquals(0, emptyCharacters!!.numberOfCharactersByRating(1))
+            }
+        }
+    }
