@@ -340,4 +340,31 @@ class CharacterAPITest {
                 assertEquals(0, emptyCharacters!!.numberOfCharactersByRating(1))
             }
         }
+    @Nested
+    inner class SearchMethods {
+
+        @Test
+        fun `search returns no characters when no name matches`() {
+            assertTrue(populatedCharacters!!.searchByCharacterName("zzz").isEmpty()) // no character has this name, should be empty
+            assertTrue(emptyCharacters!!.searchByCharacterName("naruto").isEmpty()) // empty list, nothing to find
+        }
+
+        @Test
+        fun `search returns matching characters when full name is given`() {
+            val result = populatedCharacters!!.searchByCharacterName("Naruto Uzumaki").lowercase()
+            assertTrue(result.contains("naruto uzumaki")) // full name match should work
+        }
+
+        @Test
+        fun `search returns matching characters when partial name is given`() {
+            val result = populatedCharacters!!.searchByCharacterName("goku").lowercase()
+            assertTrue(result.contains("son goku")) // partial name match, since goku's full name is "Son Goku"
+        }
+
+        @Test
+        fun `search is case insensitive`() {
+            val result = populatedCharacters!!.searchByCharacterName("EDWARD").lowercase()
+            assertTrue(result.contains("edward elric")) // uppercase search should still find a lowercase-stored name
+        }
+    }
     }

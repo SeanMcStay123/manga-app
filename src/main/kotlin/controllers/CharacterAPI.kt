@@ -8,7 +8,10 @@ class CharacterAPI(serializerType: Serializer){
 
     private var characters = ArrayList<Character>()
     private var serializer: Serializer = serializerType
-
+    private fun formatListString(charactersToFormat: List<Character>): String =
+        charactersToFormat.joinToString(separator = "\n") { character ->
+            characters.indexOf(character).toString() + ": " + character.toString()
+        }
 
     fun add(character: Character): Boolean {
         return characters.add(character) // ArrayList.add() is built-in, returns true if the item was added successfully
@@ -16,10 +19,7 @@ class CharacterAPI(serializerType: Serializer){
 
     fun listAllCharacters(): String =
         if (characters.isEmpty()) "No characters stored"
-        else characters.joinToString(separator = "\n") { character ->
-            characters.indexOf(character).toString() + ": " + character.toString()
-        }
-
+        else formatListString(characters)
 
     fun numberOfCharacters(): Int { // added two helper methods to help with CharacterAPITest
         return characters.size
@@ -35,55 +35,29 @@ class CharacterAPI(serializerType: Serializer){
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }
-    fun listActiveCharacters(): String { // returns only characters where isCharacterArchived is false
-        return if (numberOfActiveCharacters() == 0) {
-            "No active characters stored"
-        } else {
-            characters.filter { character -> !character.isCharacterArchived }
-                .joinToString(separator = "\n") { character ->
-                    "${characters.indexOf(character)}: $character"
-                }
-        }
-    }
-    fun listArchivedCharacters(): String { // returns only characters where isCharacterArchived is true
-        return if (numberOfArchivedCharacters() == 0) {
-            "No archived characters stored"
-        } else {
-            characters.filter { character -> character.isCharacterArchived }
-                .joinToString(separator = "\n") { character ->
-                    "${characters.indexOf(character)}: $character"
-                }
-        }
-    }
-    fun numberOfArchivedCharacters(): Int { // helper method to help decide how many archived characters there are
-        return characters.stream()
-            .filter { character: Character -> character.isCharacterArchived }
-            .count()
-            .toInt()
-    }
-    fun numberOfActiveCharacters(): Int {
-        return characters.stream()
-            .filter { character: Character -> !character.isCharacterArchived }
-            .count()
-            .toInt()
-    }
-    fun listCharactersBySelectedRating(rating: Int): String {
-        return if (numberOfCharactersByRating(rating) == 0) {
-            "No characters with rating ${rating} stored"
-        } else {
-            characters.filter { character -> character.characterRating == rating }
-                .joinToString(separator = "\n") { character ->
-                    "${characters.indexOf(character)}: $character"
-                }
-        }
-    }
+    fun listActiveCharacters(): String =
+        if (numberOfActiveCharacters() == 0) "No active characters stored"
+        else formatListString(characters.filter { character -> !character.isCharacterArchived })
 
-    fun numberOfCharactersByRating(rating: Int): Int {
-        return characters.stream()
-            .filter { character: Character -> character.characterRating == rating }
-            .count()
-            .toInt()
-    }
+
+    fun listArchivedCharacters(): String = // updated function since its now following sequences
+        if (numberOfArchivedCharacters() == 0) "No archived characters stored"
+        else formatListString(characters.filter { character -> character.isCharacterArchived })
+
+    fun numberOfArchivedCharacters(): Int = characters.count { character: Character -> character.isCharacterArchived }
+
+
+    fun numberOfActiveCharacters(): Int = characters.count { character: Character -> !character.isCharacterArchived }
+
+
+    fun listCharactersBySelectedRating(rating: Int): String =
+        if (numberOfCharactersByRating(rating) == 0) "No characters with rating $rating stored"
+        else formatListString(characters.filter { character -> character.characterRating == rating }) // updated listCharactersBySelectedRating because it was an older version from lab 05
+
+
+    fun numberOfCharactersByRating(rating: Int): Int = characters.count { character: Character -> character.characterRating == rating }
+
+
     fun findFavoriteCharacter(): Character? { // returns the character with the highest characterRating, or null if empty
         // uses maxByOrNull(), source https://kotlinlang.org/docs/collection-aggregate.html
         return characters.maxByOrNull { it.characterRating }
@@ -138,6 +112,11 @@ class CharacterAPI(serializerType: Serializer){
     fun isValidIndex(index: Int): Boolean { // wraps isValidListIndex so Main.kt can check an index before prompting for update details
         return isValidListIndex(index, characters)
     }
+
+    fun searchByCharacterName(searchName: String) =
+        formatListString(
+            characters.filter { character -> character.characterName.contains(searchName, ignoreCase = true) }
+        )
 
     @Throws(Exception::class)
     fun load() {
