@@ -68,23 +68,17 @@ class CharacterAPI(serializerType: Serializer){
             listOfArchivedCharacters
         }
     }
-    fun numberOfArchivedCharacters(): Int {  // helper method to help decide how many archived characters there are
-        var count = 0
-        for (character in characters) {
-            if (character.isCharacterArchived) {
-                count++
-            }
-        }
-        return count
+    fun numberOfArchivedCharacters(): Int { // helper method to help decide how many archived characters there are
+        return characters.stream()
+            .filter { character: Character -> character.isCharacterArchived }
+            .count()
+            .toInt()
     }
-    fun numberOfActiveCharacters(): Int {  // helper method to help decide how many active characters there are
-        var count = 0
-        for (character in characters) {
-            if (!character.isCharacterArchived) {
-                count++
-            }
-        }
-        return count
+    fun numberOfActiveCharacters(): Int {
+        return characters.stream()
+            .filter { character: Character -> !character.isCharacterArchived }
+            .count()
+            .toInt()
     }
     fun listCharactersBySelectedRating(rating: Int): String {
         return if (numberOfCharactersByRating(rating) == 0) {
@@ -99,14 +93,11 @@ class CharacterAPI(serializerType: Serializer){
             listOfCharacters
         }
     }
-    fun numberOfCharactersByRating(rating: Int): Int {  // helper method to decide how many characters there are of a specific rating
-        var count = 0
-        for (character in characters) {
-            if (character.characterRating == rating) {
-                count++
-            }
-        }
-        return count
+    fun numberOfCharactersByRating(rating: Int): Int {
+        return characters.stream()
+            .filter { character: Character -> character.characterRating == rating }
+            .count()
+            .toInt()
     }
     fun findFavoriteCharacter(): Character? { // returns the character with the highest characterRating, or null if empty
         // uses maxByOrNull(), source https://kotlinlang.org/docs/collection-aggregate.html
