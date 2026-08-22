@@ -13,7 +13,7 @@ import java.io.File // resolves error in character where "XMLSerializer( " File 
 private val characterAPI = CharacterAPI(JSONSerializer(File("characters.json"))) // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
 private val logger = KotlinLogging.logger {} // anything now with the logger added instead of println shows as "INFO" in the terminal, except exitapp as its println still
 
-fun mainMenu(): Int {
+fun mainMenu(): Int { // I updated list all characters to just list characters
     print(
         """
         > --------------------------------
@@ -21,7 +21,7 @@ fun mainMenu(): Int {
         > --------------------------------
         > | MANGA MENU                    |
         > |  1) Add a Character           |
-        > |  2) List all Characters       |
+        > |  2) List Characters           |
         > |  3) Update a Character        |
         > |  4) Delete a Character        |
         > |  5) Save Characters           |
@@ -40,7 +40,7 @@ fun runMenu() {
         val option = mainMenu()
         when (option) {
             1 -> addCharacter()
-            2 -> listCharacters()
+            2 -> runListMenu()
             3 -> updateCharacter()
             4 -> deleteCharacter()
             5 -> save()
@@ -67,6 +67,33 @@ fun addCharacter() { // collects name, rating and series name
 }
 fun listCharacters() {
     println(characterAPI.listAllCharacters())
+}
+
+fun listMenu(): Int { // new submenu added  and display when you press the new ListCharacters option
+    print(
+        """ 
+        > -----------------------------
+        > |   LIST MENU                |
+        > -----------------------------
+        > | 1) List All Characters     |
+        > | 2) List Active Characters  |
+        > | 3) List Archived Characters|
+        > -----------------------------
+        > | 0) Back                    |
+        > -----------------------------
+        """.trimMargin(">"))
+    return readNextInt(" > ==>>")
+}
+
+fun runListMenu() {
+    val option = listMenu()
+    when (option) {
+        1 -> listCharacters()
+        2 -> println(characterAPI.listActiveCharacters())
+        3 -> println(characterAPI.listArchivedCharacters())
+        0 -> {} // back to main menu
+        else -> println("Invalid option entered: ${option}")
+    }
 }
 
 fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
