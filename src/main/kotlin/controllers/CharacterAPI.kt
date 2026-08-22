@@ -8,7 +8,10 @@ class CharacterAPI(serializerType: Serializer){
 
     private var characters = ArrayList<Character>()
     private var serializer: Serializer = serializerType
-
+    private fun formatListString(charactersToFormat: List<Character>): String =
+        charactersToFormat.joinToString(separator = "\n") { character ->
+            characters.indexOf(character).toString() + ": " + character.toString()
+        }
 
     fun add(character: Character): Boolean {
         return characters.add(character) // ArrayList.add() is built-in, returns true if the item was added successfully
@@ -139,12 +142,10 @@ class CharacterAPI(serializerType: Serializer){
         return isValidListIndex(index, characters)
     }
 
-    fun searchByCharacterName(searchName: String): String { // returns all characters whose name contains the search text, one per line with their index
-        return characters.filter { character -> character.characterName.contains(searchName, ignoreCase = true) } // I also changed it to .contains(ignoreCase = true) for a partial
-            .joinToString(separator = "\n") { character ->
-                "${characters.indexOf(character)}: $character"
-            }
-    }
+    fun searchByCharacterName(searchName: String) =
+        formatListString(
+            characters.filter { character -> character.characterName.contains(searchName, ignoreCase = true) }
+        )
 
     @Throws(Exception::class)
     fun load() {
