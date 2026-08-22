@@ -8,12 +8,15 @@ This project follows the module's Kotlin & JUnit labs step by step, adapting eac
 
 ## Features
 
-- Menu-driven console interface with options to add, list, update, and delete a character
+- Menu-driven console interface with options to add, list, update, delete, save, load, and archive a character
 - A `Character` model (name, rating 1–5, manga series, archived status) backed by a `CharacterAPI` collection
-- List all characters, list only active characters, list only archived characters
+- List submenu: list all characters, list only active characters, list only archived characters
 - List and count characters by a selected rating (1–5)
 - Find the favorite (highest-rated) character
 - Search and count characters by manga series
+- Update a character's details, or delete a character from the collection
+- Archive an active character
+- Persist the character collection to XML or JSON — switching format requires changing only one line
 - Robust console input reading — retries on invalid Int, Double, Float, or Char input instead of crashing
 - Structured logging via kotlin-logging and slf4j-simple
 - JUnit 5 test suite covering the CharacterAPI collection, organized into nested test classes
@@ -25,6 +28,8 @@ This project follows the module's Kotlin & JUnit labs step by step, adapting eac
 - [kotlin-logging-jvm](https://github.com/oshai/kotlin-logging)
 - [slf4j-simple](https://www.slf4j.org/)
 - [JUnit 5](https://junit.org/junit5/)
+- [XStream](https://x-stream.github.io/) (XML/JSON persistence)
+- [Jettison](https://github.com/codehaus/jettison) (JSON persistence)
 
 ## Development Workflow
 
@@ -40,7 +45,8 @@ This project follows GitHub Flow: features are tracked as GitHub Issues, develop
 
 - **V1.0** — initial menu skeleton, logging, robust console input handling
 - **V2.0** — Character model and collection, active/archived/rating/series filtering, JUnit test suite
+- **V3.0** — update, delete, and archive a character, list submenu, and persistence to XML/JSON
 
 ## Status
 
-V2.0 complete. Menu options for add/list are fully wired to the character collection; update and delete are not yet connected — that's coming in a future stage of the module.
+V3.0 complete. All menu options (add, list, update, delete, save, load, archive) are fully wired to the character collection and covered by JUnit tests.
