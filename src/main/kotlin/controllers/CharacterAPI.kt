@@ -40,32 +40,24 @@ class CharacterAPI(serializerType: Serializer){
         else formatListString(characters.filter { character -> !character.isCharacterArchived })
 
 
-    fun listArchivedCharacters(): String =
+    fun listArchivedCharacters(): String = // updated function since its now following sequences
         if (numberOfArchivedCharacters() == 0) "No archived characters stored"
         else formatListString(characters.filter { character -> character.isCharacterArchived })
 
-    fun numberOfArchivedCharacters(): Int { // helper method to help decide how many archived characters there are
-        return characters.stream()
-            .filter { character: Character -> character.isCharacterArchived }
-            .count()
-            .toInt()
-    }
-    fun numberOfActiveCharacters(): Int {
-        return characters.stream()
-            .filter { character: Character -> !character.isCharacterArchived }
-            .count()
-            .toInt()
-    }
+    fun numberOfArchivedCharacters(): Int = characters.count { character: Character -> character.isCharacterArchived }
+
+
+    fun numberOfActiveCharacters(): Int = characters.count { character: Character -> !character.isCharacterArchived }
+
+
     fun listCharactersBySelectedRating(rating: Int): String =
         if (numberOfCharactersByRating(rating) == 0) "No characters with rating $rating stored"
         else formatListString(characters.filter { character -> character.characterRating == rating }) // updated listCharactersBySelectedRating because it was an older version from lab 05
 
-    fun numberOfCharactersByRating(rating: Int): Int {
-        return characters.stream()
-            .filter { character: Character -> character.characterRating == rating }
-            .count()
-            .toInt()
-    }
+
+    fun numberOfCharactersByRating(rating: Int): Int = characters.count { character: Character -> character.characterRating == rating }
+
+
     fun findFavoriteCharacter(): Character? { // returns the character with the highest characterRating, or null if empty
         // uses maxByOrNull(), source https://kotlinlang.org/docs/collection-aggregate.html
         return characters.maxByOrNull { it.characterRating }
