@@ -56,16 +56,9 @@ class CharacterAPI(serializerType: Serializer){
             .count()
             .toInt()
     }
-    fun listCharactersBySelectedRating(rating: Int): String {
-        return if (numberOfCharactersByRating(rating) == 0) {
-            "No characters with rating ${rating} stored"
-        } else {
-            characters.filter { character -> character.characterRating == rating }
-                .joinToString(separator = "\n") { character ->
-                    "${characters.indexOf(character)}: $character"
-                }
-        }
-    }
+    fun listCharactersBySelectedRating(rating: Int): String =
+        if (numberOfCharactersByRating(rating) == 0) "No characters with rating $rating stored"
+        else formatListString(characters.filter { character -> character.characterRating == rating }) // updated listCharactersBySelectedRating because it was an older version from lab 05
 
     fun numberOfCharactersByRating(rating: Int): Int {
         return characters.stream()
