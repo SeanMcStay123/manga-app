@@ -14,18 +14,11 @@ class CharacterAPI(serializerType: Serializer){
         return characters.add(character) // ArrayList.add() is built-in, returns true if the item was added successfully
     }
 
-    fun listAllCharacters(): String {
-        return if (characters.isEmpty()) {
-            "No characters stored"
-        } else {
-            var listOfCharacters = ""
-            for (i in characters.indices) {
-                listOfCharacters += "${i}: ${characters[i]} \n"
-            }
-            listOfCharacters
+    fun listAllCharacters(): String =
+        if (characters.isEmpty()) "No characters stored"
+        else characters.joinToString(separator = "\n") { character ->
+            characters.indexOf(character).toString() + ": " + character.toString()
         }
-
-    }
 
 
     fun numberOfCharacters(): Int { // added two helper methods to help with CharacterAPITest
