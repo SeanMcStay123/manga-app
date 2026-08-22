@@ -89,16 +89,13 @@ class CharacterAPI(serializerType: Serializer){
         return characters.maxByOrNull { it.characterRating }
     }
 
-    fun listCharactersByMangaSeries(series: String): String { // uses filter() with a lambda predicate, source https://kotlinlang.org/docs/collection-filtering.html
+    fun listCharactersByMangaSeries(series: String): String {
         val matches = characters.filter { it.mangaSeries.equals(series, ignoreCase = true) }
         return if (matches.isEmpty()) {
             "No characters found for manga series: $series"
         } else {
-            var listOfCharacters = ""
-            for (i in matches.indices) {
-                listOfCharacters += "${i}: ${matches[i]} \n"
-            }
-            listOfCharacters
+            matches.mapIndexed { index, character -> "$index: $character" }
+                .joinToString(separator = "\n")
         }
     }
 
