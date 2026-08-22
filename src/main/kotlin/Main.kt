@@ -26,6 +26,7 @@ fun mainMenu(): Int {
         > |  4) Delete a Character        |
         > |  5) Save Characters           |
         > |  6) Load Characters           |
+        > |  7) Archive a Character       |
         > --------------------------------
         > |  0) Exit                      |
         > --------------------------------
@@ -44,6 +45,7 @@ fun runMenu() {
             4 -> deleteCharacter()
             5 -> save()
             6 -> load()
+            7 -> archiveCharacter()
             0 -> exitApp()
             else -> println("Invalid option entered: ${option}")
         }
@@ -113,6 +115,18 @@ fun load() { // reads the character collection and replaces whats in memory
         characterAPI.load()
     } catch (e: Exception) {
         System.err.println("Error reading from file: $e")
+    }
+}
+
+fun archiveCharacter() {
+    println(characterAPI.listActiveCharacters())
+    if (characterAPI.numberOfActiveCharacters() > 0) {
+        val indexToArchive = readNextInt("Enter the index of the character to archive: ")
+        if (characterAPI.archiveCharacter(indexToArchive)) {
+            println("Archive Successful")
+        } else {
+            println("Archive Failed")
+        }
     }
 }
 

@@ -153,6 +153,15 @@ class CharacterAPI(serializerType: Serializer){
         return false // character not found, update failed
     }
 
+    fun archiveCharacter(indexToArchive: Int): Boolean {
+        val foundCharacter = findCharacter(indexToArchive)
+        if (foundCharacter != null && !foundCharacter.isCharacterArchived) {
+            foundCharacter.isCharacterArchived = true
+            return true
+        }
+        return false
+    }
+
     fun isValidIndex(index: Int): Boolean { // wraps isValidListIndex so Main.kt can check an index before prompting for update details
         return isValidListIndex(index, characters)
     }
