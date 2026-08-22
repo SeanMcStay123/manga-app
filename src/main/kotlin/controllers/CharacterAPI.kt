@@ -19,10 +19,7 @@ class CharacterAPI(serializerType: Serializer){
 
     fun listAllCharacters(): String =
         if (characters.isEmpty()) "No characters stored"
-        else characters.joinToString(separator = "\n") { character ->
-            characters.indexOf(character).toString() + ": " + character.toString()
-        }
-
+        else formatListString(characters)
 
     fun numberOfCharacters(): Int { // added two helper methods to help with CharacterAPITest
         return characters.size
@@ -38,26 +35,15 @@ class CharacterAPI(serializerType: Serializer){
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }
-    fun listActiveCharacters(): String { // returns only characters where isCharacterArchived is false
-        return if (numberOfActiveCharacters() == 0) {
-            "No active characters stored"
-        } else {
-            characters.filter { character -> !character.isCharacterArchived }
-                .joinToString(separator = "\n") { character ->
-                    "${characters.indexOf(character)}: $character"
-                }
-        }
-    }
-    fun listArchivedCharacters(): String { // returns only characters where isCharacterArchived is true
-        return if (numberOfArchivedCharacters() == 0) {
-            "No archived characters stored"
-        } else {
-            characters.filter { character -> character.isCharacterArchived }
-                .joinToString(separator = "\n") { character ->
-                    "${characters.indexOf(character)}: $character"
-                }
-        }
-    }
+    fun listActiveCharacters(): String =
+        if (numberOfActiveCharacters() == 0) "No active characters stored"
+        else formatListString(characters.filter { character -> !character.isCharacterArchived })
+
+
+    fun listArchivedCharacters(): String =
+        if (numberOfArchivedCharacters() == 0) "No archived characters stored"
+        else formatListString(characters.filter { character -> character.isCharacterArchived })
+
     fun numberOfArchivedCharacters(): Int { // helper method to help decide how many archived characters there are
         return characters.stream()
             .filter { character: Character -> character.isCharacterArchived }
