@@ -39,13 +39,10 @@ class CharacterAPI(serializerType: Serializer){
         return if (numberOfActiveCharacters() == 0) {
             "No active characters stored"
         } else {
-            var listOfActiveCharacters = ""
-            for (i in characters.indices) {
-                if (!characters[i].isCharacterArchived) { // skip archived ones
-                    listOfActiveCharacters += "${i}: ${characters[i]} \n"
+            characters.filter { character -> !character.isCharacterArchived }
+                .joinToString(separator = "\n") { character ->
+                    "${characters.indexOf(character)}: $character"
                 }
-            }
-            listOfActiveCharacters
         }
     }
     fun listArchivedCharacters(): String { // returns only characters where isCharacterArchived is true
