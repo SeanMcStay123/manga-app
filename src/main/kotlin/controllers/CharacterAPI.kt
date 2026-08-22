@@ -14,18 +14,11 @@ class CharacterAPI(serializerType: Serializer){
         return characters.add(character) // ArrayList.add() is built-in, returns true if the item was added successfully
     }
 
-    fun listAllCharacters(): String {
-        return if (characters.isEmpty()) {
-            "No characters stored"
-        } else {
-            var listOfCharacters = ""
-            for (i in characters.indices) {
-                listOfCharacters += "${i}: ${characters[i]} \n"
-            }
-            listOfCharacters
+    fun listAllCharacters(): String =
+        if (characters.isEmpty()) "No characters stored"
+        else characters.joinToString(separator = "\n") { character ->
+            characters.indexOf(character).toString() + ": " + character.toString()
         }
-
-    }
 
 
     fun numberOfCharacters(): Int { // added two helper methods to help with CharacterAPITest
@@ -46,26 +39,20 @@ class CharacterAPI(serializerType: Serializer){
         return if (numberOfActiveCharacters() == 0) {
             "No active characters stored"
         } else {
-            var listOfActiveCharacters = ""
-            for (i in characters.indices) {
-                if (!characters[i].isCharacterArchived) { // skip archived ones
-                    listOfActiveCharacters += "${i}: ${characters[i]} \n"
+            characters.filter { character -> !character.isCharacterArchived }
+                .joinToString(separator = "\n") { character ->
+                    "${characters.indexOf(character)}: $character"
                 }
-            }
-            listOfActiveCharacters
         }
     }
     fun listArchivedCharacters(): String { // returns only characters where isCharacterArchived is true
         return if (numberOfArchivedCharacters() == 0) {
             "No archived characters stored"
         } else {
-            var listOfArchivedCharacters = ""
-            for (i in characters.indices) {
-                if (characters[i].isCharacterArchived) { // only archived ones
-                    listOfArchivedCharacters += "${i}: ${characters[i]} \n"
+            characters.filter { character -> character.isCharacterArchived }
+                .joinToString(separator = "\n") { character ->
+                    "${characters.indexOf(character)}: $character"
                 }
-            }
-            listOfArchivedCharacters
         }
     }
     fun numberOfArchivedCharacters(): Int { // helper method to help decide how many archived characters there are
@@ -84,15 +71,13 @@ class CharacterAPI(serializerType: Serializer){
         return if (numberOfCharactersByRating(rating) == 0) {
             "No characters with rating ${rating} stored"
         } else {
-            var listOfCharacters = ""
-            for (i in characters.indices) {
-                if (characters[i].characterRating == rating) {
-                    listOfCharacters += "${i}: ${characters[i]} \n"
+            characters.filter { character -> character.characterRating == rating }
+                .joinToString(separator = "\n") { character ->
+                    "${characters.indexOf(character)}: $character"
                 }
-            }
-            listOfCharacters
         }
     }
+
     fun numberOfCharactersByRating(rating: Int): Int {
         return characters.stream()
             .filter { character: Character -> character.characterRating == rating }
@@ -104,16 +89,13 @@ class CharacterAPI(serializerType: Serializer){
         return characters.maxByOrNull { it.characterRating }
     }
 
-    fun listCharactersByMangaSeries(series: String): String { // uses filter() with a lambda predicate, source https://kotlinlang.org/docs/collection-filtering.html
+    fun listCharactersByMangaSeries(series: String): String {
         val matches = characters.filter { it.mangaSeries.equals(series, ignoreCase = true) }
         return if (matches.isEmpty()) {
             "No characters found for manga series: $series"
         } else {
-            var listOfCharacters = ""
-            for (i in matches.indices) {
-                listOfCharacters += "${i}: ${matches[i]} \n"
-            }
-            listOfCharacters
+            matches.mapIndexed { index, character -> "$index: $character" }
+                .joinToString(separator = "\n")
         }
     }
 
