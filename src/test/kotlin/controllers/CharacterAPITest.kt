@@ -285,4 +285,27 @@ class CharacterAPITest {
             assertEquals(storingCharacters.findCharacter(2), loadedCharacters.findCharacter(2))
         }
     }
+
+    @Nested
+    inner class ArchiveCharacters { // copied the same layout as other nested functions but adapted it to the new archive function
+        @Test
+        fun `archiving a character that does not exist returns false`() {
+            assertFalse(populatedCharacters!!.archiveCharacter(6))
+            assertFalse(populatedCharacters!!.archiveCharacter(-1))
+            assertFalse(emptyCharacters!!.archiveCharacter(0))
+        }
+
+        @Test
+        fun `archiving an active character that exists returns true and archives it`() {
+            assertFalse(populatedCharacters!!.findCharacter(0)!!.isCharacterArchived)
+            assertTrue(populatedCharacters!!.archiveCharacter(0))
+            assertTrue(populatedCharacters!!.findCharacter(0)!!.isCharacterArchived)
+        }
+
+        @Test
+        fun `archiving a character that is already archived returns false`() {
+            populatedCharacters!!.archiveCharacter(0) // archive it first
+            assertFalse(populatedCharacters!!.archiveCharacter(0)) // second attempt should fail
+        }
+    }
 }
