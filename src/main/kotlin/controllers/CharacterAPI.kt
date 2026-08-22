@@ -139,6 +139,13 @@ class CharacterAPI(serializerType: Serializer){
         return isValidListIndex(index, characters)
     }
 
+    fun searchByCharacterName(searchName: String): String { // returns all characters whose name contains the search text, one per line with their index
+        return characters.filter { character -> character.characterName.contains(searchName, ignoreCase = true) } // I also changed it to .contains(ignoreCase = true) for a partial
+            .joinToString(separator = "\n") { character ->
+                "${characters.indexOf(character)}: $character"
+            }
+    }
+
     @Throws(Exception::class)
     fun load() {
         characters = serializer.read() as ArrayList<Character>

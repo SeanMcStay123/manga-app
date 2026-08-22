@@ -27,6 +27,7 @@ fun mainMenu(): Int { // I updated list all characters to just list characters
         > |  5) Save Characters           |
         > |  6) Load Characters           |
         > |  7) Archive a Character       |
+        > |  8) Search Characters by Name |
         > --------------------------------
         > |  0) Exit                      |
         > --------------------------------
@@ -46,6 +47,7 @@ fun runMenu() {
             5 -> save()
             6 -> load()
             7 -> archiveCharacter()
+            8 -> searchByCharacterName()
             0 -> exitApp()
             else -> println("Invalid option entered: ${option}")
         }
@@ -154,6 +156,16 @@ fun archiveCharacter() {
         } else {
             println("Archive Failed")
         }
+    }
+}
+
+fun searchByCharacterName() {
+    val searchName = readNextLine("Enter the name (or part of the name) to search for: ")
+    val foundCharacters = characterAPI.searchByCharacterName(searchName)
+    if (foundCharacters.isEmpty()) {
+        println("No characters found")
+    } else {
+        println(foundCharacters)
     }
 }
 
