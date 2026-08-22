@@ -52,13 +52,10 @@ class CharacterAPI(serializerType: Serializer){
         return if (numberOfArchivedCharacters() == 0) {
             "No archived characters stored"
         } else {
-            var listOfArchivedCharacters = ""
-            for (i in characters.indices) {
-                if (characters[i].isCharacterArchived) { // only archived ones
-                    listOfArchivedCharacters += "${i}: ${characters[i]} \n"
+            characters.filter { character -> character.isCharacterArchived }
+                .joinToString(separator = "\n") { character ->
+                    "${characters.indexOf(character)}: $character"
                 }
-            }
-            listOfArchivedCharacters
         }
     }
     fun numberOfArchivedCharacters(): Int { // helper method to help decide how many archived characters there are
