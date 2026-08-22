@@ -7,6 +7,7 @@ import persistence.JSONSerializer
 import persistence.XMLSerializer // imports the new character api with XMLSerializer to stop errors
 import utils.readNextLine // alt enter fixed this import bug
 import java.io.File // resolves error in character where "XMLSerializer( " File " " was showing as red
+import utils.readNextDouble
 
 
 //private val characterAPI = CharacterAPI(XMLSerializer(File("characters.xml")))
@@ -54,11 +55,13 @@ fun runMenu() {
     } while (true)
 }
 
-fun addCharacter() { // collects name, rating and series name
+fun addCharacter() { // collects name, rating, series name, description and power level
     val characterName = readNextLine("Enter a name for the character: ")
     val characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
     val mangaSeries = readNextLine("Enter the manga series for the character: ")
-    val isAdded = characterAPI.add(Character(characterName, characterRating, mangaSeries, false)) // the false stops the characters from being archived if they are new,
+    val characterDescription = readNextLine("Enter a short description for the character: ")
+    val powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
+    val isAdded = characterAPI.add(Character(characterName, characterRating, mangaSeries, false, characterDescription, powerLevel)) // the false stops the characters from being archived if they are new,
     // isAdded holds the Boolean from ArrayList.add() above, used below to print success/fail
 
     if (isAdded) {
@@ -110,26 +113,25 @@ fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
         }
     }
 }
-    fun updateCharacter() {  // logger.info { "updateCharacter() function invoked" }
-        listCharacters()
-        if (characterAPI.numberOfCharacters() > 0) { // only ask the user to choose the character if characters exist
-            val indexToUpdate = readNextInt("Enter the index of the character to update: ")
-            if (characterAPI.isValidIndex(indexToUpdate)) {
-                val characterName = readNextLine("Enter a name for the character: ")
-                val characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
-                val mangaSeries = readNextLine("Enter the manga series for the character: ")
+fun updateCharacter() { // logger.info { "updateCharacter() function invoked" }
+    val indexToUpdate = readNextInt("Enter the index of the character to update: ")
+    if (characterAPI.isValidIndex(indexToUpdate)) {
+        val characterName = readNextLine("Enter a name for the character: ")
+        val characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
+        val mangaSeries = readNextLine("Enter the manga series for the character: ")
+        val characterDescription = readNextLine("Enter a short description for the character: ")
+        val powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
 
-                // passes the index of the character and the new details to CharacterAPI for updating and check for success.
-                if (characterAPI.updateCharacter(indexToUpdate, Character(characterName, characterRating, mangaSeries, false))) {
-                    println("Update Successful")
-                } else {
-                    println("Update Failed")
-                }
-            } else {
-                println("There are no characters for this index number")
-            }
+        // passes the index of the character and the new details to CharacterAPI for updating and check for success.
+        if (characterAPI.updateCharacter(indexToUpdate, Character(characterName, characterRating, mangaSeries, false, characterDescription, powerLevel))) {
+            println("Update Successful")
+        } else {
+            println("Update Failed")
         }
+    } else {
+        println("There are no characters for this index number")
     }
+}
 
 fun save() { // writes the character collection to file using the serializer
     try {

@@ -93,6 +93,8 @@ class CharacterAPI(serializerType: Serializer){
             foundCharacter.characterName = character.characterName
             foundCharacter.characterRating = character.characterRating
             foundCharacter.mangaSeries = character.mangaSeries
+            foundCharacter.characterDescription = character.characterDescription
+            foundCharacter.powerLevel = character.powerLevel
             return true // update succeeded
         }
 

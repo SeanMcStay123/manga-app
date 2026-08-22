@@ -25,11 +25,11 @@ class CharacterAPITest {
 
     @BeforeEach
     fun setup() { // runs before every test, resets test data
-        naruto = Character("Naruto Uzumaki", 5, "Naruto", false)
-        luffy = Character("Monkey D. Luffy", 4, "One Piece", false)
-        goku = Character("Son Goku", 5, "Dragon Ball", false)
-        edward = Character("Edward Elric", 4, "Fullmetal Alchemist", false)
-        eren = Character("Eren Yeager", 3, "Attack on Titan", false)
+        naruto = Character("Naruto Uzumaki", 5, "Naruto", false, "A ninja who dreams of becoming Hokage", 9500.0)
+        luffy = Character("Monkey D. Luffy", 4, "One Piece", false, "Captain of the Straw Hat Pirates", 9200.5)
+        goku = Character("Son Goku", 5, "Dragon Ball", false, "A Saiyan warrior who loves a good fight", 9800.0)
+        edward = Character("Edward Elric", 4, "Fullmetal Alchemist", false, "The Fullmetal Alchemist", 8700.25)
+        eren = Character("Eren Yeager", 3, "Attack on Titan", false, "A soldier fighting for humanity's freedom", 7600.75)
 
         //adding 5 Characters to the characters api
         populatedCharacters!!.add(naruto!!)
@@ -54,7 +54,7 @@ class CharacterAPITest {
     inner class AddCharacters {
         @Test
         fun `adding a Character to a populated list adds to ArrayList`() {
-            val newCharacter = Character("Levi Ackerman", 5, "Attack on Titan", false)
+            val newCharacter = Character("Levi Ackerman", 5, "Attack on Titan", false, "A skilled soldier and captain of the Special Operations Squad", 9900.0)
             assertEquals(5, populatedCharacters!!.numberOfCharacters())
             assertTrue(populatedCharacters!!.add(newCharacter))
             assertEquals(6, populatedCharacters!!.numberOfCharacters())
@@ -66,7 +66,7 @@ class CharacterAPITest {
 
         @Test
         fun `adding a Character to an empty list adds to ArrayList`() {
-            val newCharacter = Character("Levi Ackerman", 5, "Attack on Titan", false)
+            val newCharacter = Character("Levi Ackerman", 5, "Attack on Titan", false, "A skilled soldier and captain of the Special Operations Squad", 9900.0)
             assertEquals(0, emptyCharacters!!.numberOfCharacters())
             assertTrue(emptyCharacters!!.add(newCharacter))
             assertEquals(1, emptyCharacters!!.numberOfCharacters())
@@ -185,9 +185,9 @@ class CharacterAPITest {
     inner class UpdateCharacters {
         @Test
         fun `updating a character that does not exist returns false`(){
-            assertFalse(populatedCharacters!!.updateCharacter(6, Character("Updating Character", 2, "Bleach", false)))
-            assertFalse(populatedCharacters!!.updateCharacter(-1, Character("Updating Character", 2, "Bleach", false)))
-            assertFalse(emptyCharacters!!.updateCharacter(0, Character("Updating Character", 2, "Bleach", false)))
+            assertFalse(populatedCharacters!!.updateCharacter(6, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)))
+            assertFalse(populatedCharacters!!.updateCharacter(-1, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)))
+            assertFalse(emptyCharacters!!.updateCharacter(0, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)))
         }
 
         @Test
@@ -199,7 +199,7 @@ class CharacterAPITest {
             assertEquals("Attack on Titan", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
 
             //update character 5 with new information and ensure contents updated successfully
-            assertTrue(populatedCharacters!!.updateCharacter(4, Character("Updating Character", 2, "Bleach", false)))
+            assertTrue(populatedCharacters!!.updateCharacter(4, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)))
             assertEquals("Updating Character", populatedCharacters!!.findCharacter(4)!!.characterName)
             assertEquals(2, populatedCharacters!!.findCharacter(4)!!.characterRating)
             assertEquals("Bleach", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
@@ -309,37 +309,38 @@ class CharacterAPITest {
         }
     }
 
-        @Nested
-        inner class CountingMethods { // new tests added following the lambdas section
+    @Nested
+    inner class CountingMethods { // new tests added following the lambdas section
 
-            @Test
-            fun numberOfCharactersCalculatedCorrectly() {
-                assertEquals(5, populatedCharacters!!.numberOfCharacters())
-                assertEquals(0, emptyCharacters!!.numberOfCharacters())
-            }
-
-            @Test
-            fun numberOfArchivedCharactersCalculatedCorrectly() {
-                assertEquals(0, populatedCharacters!!.numberOfArchivedCharacters())
-                assertEquals(0, emptyCharacters!!.numberOfArchivedCharacters())
-            }
-
-            @Test
-            fun numberOfActiveCharactersCalculatedCorrectly() {
-                assertEquals(5, populatedCharacters!!.numberOfActiveCharacters())
-                assertEquals(0, emptyCharacters!!.numberOfActiveCharacters())
-            }
-
-            @Test
-            fun numberOfCharactersByRatingCalculatedCorrectly() {
-                assertEquals(0, populatedCharacters!!.numberOfCharactersByRating(1))
-                assertEquals(0, populatedCharacters!!.numberOfCharactersByRating(2))
-                assertEquals(1, populatedCharacters!!.numberOfCharactersByRating(3))
-                assertEquals(2, populatedCharacters!!.numberOfCharactersByRating(4))
-                assertEquals(2, populatedCharacters!!.numberOfCharactersByRating(5))
-                assertEquals(0, emptyCharacters!!.numberOfCharactersByRating(1))
-            }
+        @Test
+        fun numberOfCharactersCalculatedCorrectly() {
+            assertEquals(5, populatedCharacters!!.numberOfCharacters())
+            assertEquals(0, emptyCharacters!!.numberOfCharacters())
         }
+
+        @Test
+        fun numberOfArchivedCharactersCalculatedCorrectly() {
+            assertEquals(0, populatedCharacters!!.numberOfArchivedCharacters())
+            assertEquals(0, emptyCharacters!!.numberOfArchivedCharacters())
+        }
+
+        @Test
+        fun numberOfActiveCharactersCalculatedCorrectly() {
+            assertEquals(5, populatedCharacters!!.numberOfActiveCharacters())
+            assertEquals(0, emptyCharacters!!.numberOfActiveCharacters())
+        }
+
+        @Test
+        fun numberOfCharactersByRatingCalculatedCorrectly() {
+            assertEquals(0, populatedCharacters!!.numberOfCharactersByRating(1))
+            assertEquals(0, populatedCharacters!!.numberOfCharactersByRating(2))
+            assertEquals(1, populatedCharacters!!.numberOfCharactersByRating(3))
+            assertEquals(2, populatedCharacters!!.numberOfCharactersByRating(4))
+            assertEquals(2, populatedCharacters!!.numberOfCharactersByRating(5))
+            assertEquals(0, emptyCharacters!!.numberOfCharactersByRating(1))
+        }
+    }
+
     @Nested
     inner class SearchMethods {
 
@@ -367,4 +368,4 @@ class CharacterAPITest {
             assertTrue(result.contains("edward elric")) // uppercase search should still find a lowercase-stored name
         }
     }
-    }
+}
