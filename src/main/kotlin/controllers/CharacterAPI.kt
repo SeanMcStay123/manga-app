@@ -2,6 +2,7 @@ package controllers
 
 import models.Character
 import persistence.Serializer
+import utils.isValidListIndex
 
 
 class CharacterAPI(serializerType: Serializer){
@@ -31,10 +32,7 @@ class CharacterAPI(serializerType: Serializer){
         } else null
     }
 
-    // utility method to determine if an index is valid in a list.
-    fun isValidListIndex(index: Int, list: List<Any>): Boolean {
-        return (index >= 0 && index < list.size)
-    }
+
     fun listActiveCharacters(): String =
         if (numberOfActiveCharacters() == 0) "No active characters stored"
         else formatListString(characters.filter { character -> !character.isCharacterArchived })
