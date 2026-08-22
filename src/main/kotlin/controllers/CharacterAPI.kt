@@ -71,15 +71,13 @@ class CharacterAPI(serializerType: Serializer){
         return if (numberOfCharactersByRating(rating) == 0) {
             "No characters with rating ${rating} stored"
         } else {
-            var listOfCharacters = ""
-            for (i in characters.indices) {
-                if (characters[i].characterRating == rating) {
-                    listOfCharacters += "${i}: ${characters[i]} \n"
+            characters.filter { character -> character.characterRating == rating }
+                .joinToString(separator = "\n") { character ->
+                    "${characters.indexOf(character)}: $character"
                 }
-            }
-            listOfCharacters
         }
     }
+
     fun numberOfCharactersByRating(rating: Int): Int {
         return characters.stream()
             .filter { character: Character -> character.characterRating == rating }
