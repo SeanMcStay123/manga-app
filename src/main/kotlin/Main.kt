@@ -8,7 +8,9 @@ import persistence.XMLSerializer // imports the new character api with XMLSerial
 import utils.readNextLine // alt enter fixed this import bug
 import java.io.File // resolves error in character where "XMLSerializer( " File " " was showing as red
 import utils.readNextDouble
-
+import utils.isValidRating
+import utils.isValidDescription
+import utils.isValidPowerLevel
 
 //private val characterAPI = CharacterAPI(XMLSerializer(File("characters.xml")))
 private val characterAPI = CharacterAPI(JSONSerializer(File("characters.json"))) // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
@@ -55,13 +57,36 @@ fun runMenu() {
     } while (true)
 }
 
-fun addCharacter() { // collects name, rating, series name, description and power level
+fun addCharacter() { // collects name, rating, series name, description and power level, validating rating/description/power level
     val characterName = readNextLine("Enter a name for the character: ")
-    val characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
+
+    var characterRating: Int
+    do {
+        characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
+        if (!isValidRating(characterRating)) {
+            println("Rating must be between 1 and 5, please try again")
+        }
+    } while (!isValidRating(characterRating))
+
     val mangaSeries = readNextLine("Enter the manga series for the character: ")
-    val characterDescription = readNextLine("Enter a short description for the character: ")
-    val powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
-    val isAdded = characterAPI.add(Character(characterName, characterRating, mangaSeries, false, characterDescription, powerLevel)) // the false stops the characters from being archived if they are new,
+
+    var characterDescription: String
+    do {
+        characterDescription = readNextLine("Enter a short description for the character: ")
+        if (!isValidDescription(characterDescription)) {
+            println("Description can't be empty, please try again")
+        }
+    } while (!isValidDescription(characterDescription))
+
+    var powerLevel: Double
+    do {
+        powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
+        if (!isValidPowerLevel(powerLevel)) {
+            println("Power level can't be negative, please try again")
+        }
+    } while (!isValidPowerLevel(powerLevel))
+
+    val isAdded = characterAPI.add(Character(characterName, characterRating, mangaSeries, false, characterDescription, powerLevel))
     // isAdded holds the Boolean from ArrayList.add() above, used below to print success/fail
 
     if (isAdded) {
@@ -70,6 +95,7 @@ fun addCharacter() { // collects name, rating, series name, description and powe
         println("Add Failed")
     }
 }
+
 fun listCharacters() {
     println(characterAPI.listAllCharacters())
 }
@@ -113,23 +139,52 @@ fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
         }
     }
 }
-fun updateCharacter() { // logger.info { "updateCharacter() function invoked" }
-    val indexToUpdate = readNextInt("Enter the index of the character to update: ")
-    if (characterAPI.isValidIndex(indexToUpdate)) {
-        val characterName = readNextLine("Enter a name for the character: ")
-        val characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
-        val mangaSeries = readNextLine("Enter the manga series for the character: ")
-        val characterDescription = readNextLine("Enter a short description for the character: ")
-        val powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
+fun updateCharacter() {
+    listCharacters()
+    if (characterAPI.numberOfCharacters() > 0) {
+        val indexToUpdate = readNextInt("Enter the index of the character to update: ")
+        if (characterAPI.isValidIndex(indexToUpdate)) {
+            val characterName = readNextLine("Enter a name for the character: ")
 
-        // passes the index of the character and the new details to CharacterAPI for updating and check for success.
-        if (characterAPI.updateCharacter(indexToUpdate, Character(characterName, characterRating, mangaSeries, false, characterDescription, powerLevel))) {
-            println("Update Successful")
+            var characterRating: Int
+            do {
+                characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
+                if (!isValidRating(characterRating)) {
+                    println("Rating must be between 1 and 5, please try again")
+                }
+            } while (!isValidRating(characterRating))
+
+            val mangaSeries = readNextLine("Enter the manga series for the character: ")
+
+            var characterDescription: String
+            do {
+                characterDescription = readNextLine("Enter a short description for the character: ")
+                if (!isValidDescription(characterDescription)) {
+                    println("Description can't be empty, please try again")
+                }
+            } while (!isValidDescription(characterDescription))
+
+            var powerLevel: Double
+            do {
+                powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
+                if (!isValidPowerLevel(powerLevel)) {
+                    println("Power level can't be negative, please try again")
+                }
+            } while (!isValidPowerLevel(powerLevel))
+
+            val isUpdated = characterAPI.updateCharacter(
+                indexToUpdate,
+                Character(characterName, characterRating, mangaSeries, false, characterDescription, powerLevel)
+            )
+
+            if (isUpdated) {
+                println("Update Successful")
+            } else {
+                println("Update Failed")
+            }
         } else {
-            println("Update Failed")
+            println("There are no characters for this index number")
         }
-    } else {
-        println("There are no characters for this index number")
     }
 }
 
