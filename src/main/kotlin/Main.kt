@@ -1,20 +1,25 @@
+// kotlin logging found here: https://mvnrepository.com/artifact/io.github.oshai/kotlin-logging-jvm
 import controllers.CharacterAPI
-import java.lang.System.exit // this resolved the import error
-import utils.readNextInt
-import io.github.oshai.kotlinlogging.KotlinLogging // kotlin logging found here: https://mvnrepository.com/artifact/io.github.oshai/kotlin-logging-jvm
+import io.github.oshai.kotlinlogging.KotlinLogging
 import models.Character
 import persistence.JSONSerializer
-import persistence.XMLSerializer // imports the new character api with XMLSerializer to stop errors
-import utils.readNextLine // alt enter fixed this import bug
-import java.io.File // resolves error in character where "XMLSerializer( " File " " was showing as red
-import utils.readNextDouble
-import utils.isValidRating
 import utils.isValidDescription
 import utils.isValidPowerLevel
+import utils.isValidRating
+import utils.readNextDouble
+import utils.readNextInt
+import utils.readNextLine // alt enter fixed this import bug
+import java.io.File // resolves error in character where "XMLSerializer( " File " " was showing as red
+import kotlin.system.exitProcess
 
-//private val characterAPI = CharacterAPI(XMLSerializer(File("characters.xml")))
-private val characterAPI = CharacterAPI(JSONSerializer(File("characters.json"))) // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
-private val logger = KotlinLogging.logger {} // anything now with the logger added instead of println shows as "INFO" in the terminal, except exitapp as its println still
+// private val characterAPI = CharacterAPI(XMLSerializer(File("characters.xml")))
+private val characterAPI =
+    CharacterAPI(
+        JSONSerializer(File("characters.json")),
+    ) // links CharacterAPI class to main.kt, I pressed alt+enter to fix import issue
+private val logger =
+    KotlinLogging.logger {
+    } // anything now with the logger added instead of println shows as "INFO" in the terminal, except exitapp as its println still
 
 fun mainMenu(): Int { // I updated list all characters to just list characters
     print(
@@ -34,15 +39,14 @@ fun mainMenu(): Int { // I updated list all characters to just list characters
         > --------------------------------
         > |  0) Exit                      |
         > --------------------------------
-        >""".trimMargin(">"))
+        >""".trimMargin(">"),
+    )
     return readNextInt(" > ==>>")
-
 }
 
 fun runMenu() {
     do {
-        val option = mainMenu()
-        when (option) {
+        when (val option = mainMenu()) {
             1 -> addCharacter()
             2 -> runListMenu()
             3 -> updateCharacter()
@@ -52,42 +56,20 @@ fun runMenu() {
             7 -> archiveCharacter()
             8 -> searchByCharacterName()
             0 -> exitApp()
-            else -> println("Invalid option entered: ${option}")
+            else -> println("Invalid option entered: $option")
         }
     } while (true)
 }
 
 fun addCharacter() { // collects name, rating, series name, description and power level, validating rating/description/power level
     val characterName = readNextLine("Enter a name for the character: ")
+    val details = readValidatedCharacterDetails()
 
-    var characterRating: Int
-    do {
-        characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
-        if (!isValidRating(characterRating)) {
-            println("Rating must be between 1 and 5, please try again")
-        }
-    } while (!isValidRating(characterRating))
-
-    val mangaSeries = readNextLine("Enter the manga series for the character: ")
-
-    var characterDescription: String
-    do {
-        characterDescription = readNextLine("Enter a short description for the character: ")
-        if (!isValidDescription(characterDescription)) {
-            println("Description can't be empty, please try again")
-        }
-    } while (!isValidDescription(characterDescription))
-
-    var powerLevel: Double
-    do {
-        powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
-        if (!isValidPowerLevel(powerLevel)) {
-            println("Power level can't be negative, please try again")
-        }
-    } while (!isValidPowerLevel(powerLevel))
-
-    val isAdded = characterAPI.add(Character(characterName, characterRating, mangaSeries, false, characterDescription, powerLevel))
-    // isAdded holds the Boolean from ArrayList.add() above, used below to print success/fail
+    val isAdded =
+        characterAPI.add(
+            Character(characterName, details.characterRating, details.mangaSeries, false, details.characterDescription, details.powerLevel),
+        )
+// isAdded holds the Boolean from ArrayList.add() above, used below to print success/fail
 
     if (isAdded) {
         println("Added Successfully")
@@ -112,22 +94,23 @@ fun listMenu(): Int { // new submenu added  and display when you press the new L
         > -----------------------------
         > | 0) Back                    |
         > -----------------------------
-        """.trimMargin(">"))
+        """.trimMargin(">"),
+    )
     return readNextInt(" > ==>>")
 }
 
 fun runListMenu() {
-    val option = listMenu()
-    when (option) {
+    when (val option = listMenu()) {
         1 -> listCharacters()
         2 -> println(characterAPI.listActiveCharacters())
         3 -> println(characterAPI.listArchivedCharacters())
         0 -> {} // back to main menu
-        else -> println("Invalid option entered: ${option}")
+        else -> println("Invalid option entered: $option")
     }
 }
 
-fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
+fun deleteCharacter() {
+    logger.info { "deleteCharacter() function invoked" }
     listCharacters()
     if (characterAPI.numberOfCharacters() > 0) { // only asks the user to choose the character to delete if characters exist
         val indexToDelete = readNextInt("Enter the index of the character to delete: ")
@@ -139,43 +122,27 @@ fun deleteCharacter(){ // logger.info { "deleteCharacter() function invoked" }
         }
     }
 }
+
 fun updateCharacter() {
     listCharacters()
     if (characterAPI.numberOfCharacters() > 0) {
         val indexToUpdate = readNextInt("Enter the index of the character to update: ")
         if (characterAPI.isValidIndex(indexToUpdate)) {
             val characterName = readNextLine("Enter a name for the character: ")
+            val details = readValidatedCharacterDetails()
 
-            var characterRating: Int
-            do {
-                characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
-                if (!isValidRating(characterRating)) {
-                    println("Rating must be between 1 and 5, please try again")
-                }
-            } while (!isValidRating(characterRating))
-
-            val mangaSeries = readNextLine("Enter the manga series for the character: ")
-
-            var characterDescription: String
-            do {
-                characterDescription = readNextLine("Enter a short description for the character: ")
-                if (!isValidDescription(characterDescription)) {
-                    println("Description can't be empty, please try again")
-                }
-            } while (!isValidDescription(characterDescription))
-
-            var powerLevel: Double
-            do {
-                powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
-                if (!isValidPowerLevel(powerLevel)) {
-                    println("Power level can't be negative, please try again")
-                }
-            } while (!isValidPowerLevel(powerLevel))
-
-            val isUpdated = characterAPI.updateCharacter(
-                indexToUpdate,
-                Character(characterName, characterRating, mangaSeries, false, characterDescription, powerLevel)
-            )
+            val isUpdated =
+                characterAPI.updateCharacter(
+                    indexToUpdate,
+                    Character(
+                        characterName,
+                        details.characterRating,
+                        details.mangaSeries,
+                        false,
+                        details.characterDescription,
+                        details.powerLevel,
+                    ),
+                )
 
             if (isUpdated) {
                 println("Update Successful")
@@ -226,12 +193,48 @@ fun searchByCharacterName() {
     }
 }
 
+private data class CharacterDetails(
+    val characterRating: Int,
+    val mangaSeries: String,
+    val characterDescription: String,
+    val powerLevel: Double,
+)
+
+private fun readValidatedCharacterDetails(): CharacterDetails {
+    var characterRating: Int
+    do {
+        characterRating = readNextInt("Enter a rating (1-low, 2, 3, 4, 5-high): ")
+        if (!isValidRating(characterRating)) {
+            println("Rating must be between 1 and 5, please try again")
+        }
+    } while (!isValidRating(characterRating))
+
+    val mangaSeries = readNextLine("Enter the manga series for the character: ")
+
+    var characterDescription: String
+    do {
+        characterDescription = readNextLine("Enter a short description for the character: ")
+        if (!isValidDescription(characterDescription)) {
+            println("Description can't be empty, please try again")
+        }
+    } while (!isValidDescription(characterDescription))
+
+    var powerLevel: Double
+    do {
+        powerLevel = readNextDouble("Enter the character's power level (e.g. 9500.5): ")
+        if (!isValidPowerLevel(powerLevel)) {
+            println("Power level can't be negative, please try again")
+        }
+    } while (!isValidPowerLevel(powerLevel))
+
+    return CharacterDetails(characterRating, mangaSeries, characterDescription, powerLevel)
+}
+
 fun exitApp() {
     println("Exiting...bye")
-    exit(0) // 0 means exit code
+    exitProcess(0) // 0 means exit code
 }
 
 fun main() {
     runMenu()
 }
-

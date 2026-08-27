@@ -1,16 +1,15 @@
 package persistence
 
-import java.io.File
-import kotlin.Throws
 import com.thoughtworks.xstream.XStream
 import com.thoughtworks.xstream.io.xml.DomDriver
+import models.Character
+import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
 import java.lang.Exception
-import models.Character
+import kotlin.Throws
 
 class XMLSerializer(private val file: File) : Serializer {
-
     @Throws(Exception::class)
     override fun read(): Any {
         val xStream = XStream(DomDriver())

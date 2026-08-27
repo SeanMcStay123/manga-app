@@ -2,19 +2,18 @@ package controllers
 
 import models.Character
 import org.junit.jupiter.api.AfterEach // runs after every test, used to reset/clear test data
+import org.junit.jupiter.api.Assertions.assertEquals // checks two values match
+import org.junit.jupiter.api.Assertions.assertFalse // checks something is false
+import org.junit.jupiter.api.Assertions.assertNull // checks that a value is null, e.g. deleting/updating something that doesn't exist
 import org.junit.jupiter.api.Assertions.assertTrue // checks something is true
 import org.junit.jupiter.api.BeforeEach // sets up data before each test
-import org.junit.jupiter.api.Test // marks a function as a test that JUnit will run
-import org.junit.jupiter.api.Assertions.assertEquals // checks two values match
 import org.junit.jupiter.api.Nested // groups related tests together
-import org.junit.jupiter.api.Assertions.assertNull // checks that a value is null, e.g. deleting/updating something that doesn't exist
-import org.junit.jupiter.api.Assertions.assertFalse // checks something is false
+import org.junit.jupiter.api.Test // marks a function as a test that JUnit will run
 import persistence.JSONSerializer
 import persistence.XMLSerializer
 import java.io.File
 
 class CharacterAPITest {
-
     private var naruto: Character? = null
     private var luffy: Character? = null
     private var goku: Character? = null
@@ -31,7 +30,7 @@ class CharacterAPITest {
         edward = Character("Edward Elric", 4, "Fullmetal Alchemist", false, "The Fullmetal Alchemist", 8700.25)
         eren = Character("Eren Yeager", 3, "Attack on Titan", false, "A soldier fighting for humanity's freedom", 7600.75)
 
-        //adding 5 Characters to the characters api
+        // adding 5 Characters to the characters api
         populatedCharacters!!.add(naruto!!)
         populatedCharacters!!.add(luffy!!)
         populatedCharacters!!.add(goku!!)
@@ -54,19 +53,35 @@ class CharacterAPITest {
     inner class AddCharacters {
         @Test
         fun `adding a Character to a populated list adds to ArrayList`() {
-            val newCharacter = Character("Levi Ackerman", 5, "Attack on Titan", false, "A skilled soldier and captain of the Special Operations Squad", 9900.0)
+            val newCharacter =
+                Character(
+                    "Levi Ackerman",
+                    5,
+                    "Attack on Titan",
+                    false,
+                    "A skilled soldier and captain of the Special Operations Squad",
+                    9900.0,
+                )
             assertEquals(5, populatedCharacters!!.numberOfCharacters())
             assertTrue(populatedCharacters!!.add(newCharacter))
             assertEquals(6, populatedCharacters!!.numberOfCharacters())
             assertEquals(
                 newCharacter,
-                populatedCharacters!!.findCharacter(populatedCharacters!!.numberOfCharacters() - 1)
+                populatedCharacters!!.findCharacter(populatedCharacters!!.numberOfCharacters() - 1),
             )
         }
 
         @Test
         fun `adding a Character to an empty list adds to ArrayList`() {
-            val newCharacter = Character("Levi Ackerman", 5, "Attack on Titan", false, "A skilled soldier and captain of the Special Operations Squad", 9900.0)
+            val newCharacter =
+                Character(
+                    "Levi Ackerman",
+                    5,
+                    "Attack on Titan",
+                    false,
+                    "A skilled soldier and captain of the Special Operations Squad",
+                    9900.0,
+                )
             assertEquals(0, emptyCharacters!!.numberOfCharacters())
             assertTrue(emptyCharacters!!.add(newCharacter))
             assertEquals(1, emptyCharacters!!.numberOfCharacters())
@@ -95,14 +110,16 @@ class CharacterAPITest {
         }
     }
 
+    // confirms the empty-list edge case for the active filter
     @Test
-    fun `listActiveCharacters returns No Active Characters Stored message when ArrayList is empty`() { // confirms the empty-list edge case for the active filter
+    fun `listActiveCharacters returns No Active Characters Stored message when ArrayList is empty`() {
         assertEquals(0, emptyCharacters!!.numberOfActiveCharacters())
         assertTrue(emptyCharacters!!.listActiveCharacters().lowercase().contains("no active characters"))
     }
 
+    // proves the filter actually works and list has 5 characters, but none archived so the message should still show
     @Test
-    fun `listActiveCharacters returns Active Characters when ArrayList has active characters stored`() { // proves the filter actually works and list has 5 characters, but none archived so the message should still show
+    fun `listActiveCharacters returns Active Characters when ArrayList has active characters stored`() {
         assertEquals(5, populatedCharacters!!.numberOfActiveCharacters())
         val activeString = populatedCharacters!!.listActiveCharacters().lowercase()
         assertTrue(activeString.contains("naruto uzumaki"))
@@ -163,7 +180,6 @@ class CharacterAPITest {
 
     @Nested // groups both "delete" tests together in the test results terminal panel
     inner class DeleteCharacters {
-
         @Test
         fun `deleting a Character that does not exist, returns null`() {
             assertNull(emptyCharacters!!.deleteCharacter(0))
@@ -184,22 +200,33 @@ class CharacterAPITest {
     @Nested
     inner class UpdateCharacters {
         @Test
-        fun `updating a character that does not exist returns false`(){
-            assertFalse(populatedCharacters!!.updateCharacter(6, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)))
-            assertFalse(populatedCharacters!!.updateCharacter(-1, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)))
-            assertFalse(emptyCharacters!!.updateCharacter(0, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)))
+        fun `updating a character that does not exist returns false`() {
+            assertFalse(
+                populatedCharacters!!.updateCharacter(6, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)),
+            )
+            assertFalse(
+                populatedCharacters!!.updateCharacter(
+                    -1,
+                    Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0),
+                ),
+            )
+            assertFalse(
+                emptyCharacters!!.updateCharacter(0, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)),
+            )
         }
 
         @Test
         fun `updating a character that exists returns true and updates`() {
-            //check character 5 (index 4) exists and check the contents
+            // check character 5 (index 4) exists and check the contents
             assertEquals(eren, populatedCharacters!!.findCharacter(4))
             assertEquals("Eren Yeager", populatedCharacters!!.findCharacter(4)!!.characterName)
             assertEquals(3, populatedCharacters!!.findCharacter(4)!!.characterRating)
             assertEquals("Attack on Titan", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
 
-            //update character 5 with new information and ensure contents updated successfully
-            assertTrue(populatedCharacters!!.updateCharacter(4, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)))
+            // update character 5 with new information and ensure contents updated successfully
+            assertTrue(
+                populatedCharacters!!.updateCharacter(4, Character("Updating Character", 2, "Bleach", false, "Updated description", 100.0)),
+            )
             assertEquals("Updating Character", populatedCharacters!!.findCharacter(4)!!.characterName)
             assertEquals(2, populatedCharacters!!.findCharacter(4)!!.characterRating)
             assertEquals("Bleach", populatedCharacters!!.findCharacter(4)!!.mangaSeries)
@@ -208,18 +235,17 @@ class CharacterAPITest {
 
     @Nested
     inner class PersistenceTests {
-
         @Test
         fun `saving and loading an empty collection in XML doesn't crash app`() {
             // Saving an empty characters.xml file.
             val storingCharacters = CharacterAPI(XMLSerializer(File("characters.xml")))
             storingCharacters.store()
 
-            //Loading the empty characters.xml file into a new object
+            // Loading the empty characters.xml file into a new object
             val loadedCharacters = CharacterAPI(XMLSerializer(File("characters.xml")))
             loadedCharacters.load()
 
-            //Comparing the source of the characters (storingCharacters) with the XML loaded characters (loadedCharacters)
+            // Comparing the source of the characters (storingCharacters) with the XML loaded characters (loadedCharacters)
             assertEquals(0, storingCharacters.numberOfCharacters())
             assertEquals(0, loadedCharacters.numberOfCharacters())
             assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
@@ -234,11 +260,11 @@ class CharacterAPITest {
             storingCharacters.add(goku!!)
             storingCharacters.store()
 
-            //Loading characters.xml into a different collection
+            // Loading characters.xml into a different collection
             val loadedCharacters = CharacterAPI(XMLSerializer(File("characters.xml")))
             loadedCharacters.load()
 
-            //Comparing the source of the characters (storingCharacters) with the XML loaded characters (loadedCharacters)
+            // Comparing the source of the characters (storingCharacters) with the XML loaded characters (loadedCharacters)
             assertEquals(3, storingCharacters.numberOfCharacters())
             assertEquals(3, loadedCharacters.numberOfCharacters())
             assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
@@ -253,11 +279,11 @@ class CharacterAPITest {
             val storingCharacters = CharacterAPI(JSONSerializer(File("characters.json")))
             storingCharacters.store()
 
-            //Loading the empty characters.json file into a new object
+            // Loading the empty characters.json file into a new object
             val loadedCharacters = CharacterAPI(JSONSerializer(File("characters.json")))
             loadedCharacters.load()
 
-            //Comparing the source of the characters (storingCharacters) with the JSON loaded characters (loadedCharacters)
+            // Comparing the source of the characters (storingCharacters) with the JSON loaded characters (loadedCharacters)
             assertEquals(0, storingCharacters.numberOfCharacters())
             assertEquals(0, loadedCharacters.numberOfCharacters())
             assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
@@ -272,11 +298,11 @@ class CharacterAPITest {
             storingCharacters.add(goku!!)
             storingCharacters.store()
 
-            //Loading characters.json into a different collection
+            // Loading characters.json into a different collection
             val loadedCharacters = CharacterAPI(JSONSerializer(File("characters.json")))
             loadedCharacters.load()
 
-            //Comparing the source of the characters (storingCharacters) with the JSON loaded characters (loadedCharacters)
+            // Comparing the source of the characters (storingCharacters) with the JSON loaded characters (loadedCharacters)
             assertEquals(3, storingCharacters.numberOfCharacters())
             assertEquals(3, loadedCharacters.numberOfCharacters())
             assertEquals(storingCharacters.numberOfCharacters(), loadedCharacters.numberOfCharacters())
@@ -343,7 +369,6 @@ class CharacterAPITest {
 
     @Nested
     inner class SearchMethods {
-
         @Test
         fun `search returns no characters when no name matches`() {
             assertTrue(populatedCharacters!!.searchByCharacterName("zzz").isEmpty()) // no character has this name, should be empty

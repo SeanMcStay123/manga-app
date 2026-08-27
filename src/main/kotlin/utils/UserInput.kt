@@ -17,7 +17,8 @@ fun readNextInt(prompt: String?): Int {
 
 // This function accepts a prompt as a parameter and prints it to the console (e.g. "Enter the number of items").
 
-fun readNextDouble(prompt: String?): Double {   // same as readNextInt just swapping .toInt to .toDouble(), main differrence is that it can accept 4.5/10 instead of just 4/10
+// same as readNextInt just swapping .toInt to .toDouble(), main difference is that it can accept 4.5/10 instead of just 4/10
+fun readNextDouble(prompt: String?): Double {
     do {
         try {
             print(prompt)
@@ -49,9 +50,9 @@ fun readNextChar(prompt: String?): Char {
         try {
             print(prompt)
             return readln().first()
-        } catch (e: Exception) { // deleted NumberFormat to widen the catch of inputs and give less errors
+        } catch (e: Exception) {
+            // deleted NumberFormat to widen the catch of inputs and give less errors
             System.err.println("\tEnter a character please.")
         }
     } while (true)
 }
-

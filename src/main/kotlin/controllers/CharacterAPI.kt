@@ -4,23 +4,40 @@ import models.Character
 import persistence.Serializer
 import utils.isValidListIndex
 
+/**
+ * This class manages a list of characters and provides functionality for adding, updating, deleting,
+ * and filtering characters. It uses a [Serializer] to load and store the characters persistently.
+ *
+ * @property serializer A serializer instance for reading and writing the characters.
+ * @constructor Initializes the CharacterAPI with the specified [serializerType].
+ */
 
-class CharacterAPI(serializerType: Serializer){
-
+class CharacterAPI(serializerType: Serializer) {
     private var characters = ArrayList<Character>()
     private var serializer: Serializer = serializerType
+
     private fun formatListString(charactersToFormat: List<Character>): String =
         charactersToFormat.joinToString(separator = "\n") { character ->
             characters.indexOf(character).toString() + ": " + character.toString()
         }
+
+    /**
+     * Adds a new [Character] to the list.
+     *
+     * @param character The [Character] to be added.
+     * @return `true` if the character was successfully added, `false` otherwise.
+     */
 
     fun add(character: Character): Boolean {
         return characters.add(character) // ArrayList.add() is built-in, returns true if the item was added successfully
     }
 
     fun listAllCharacters(): String =
-        if (characters.isEmpty()) "No characters stored"
-        else formatListString(characters)
+        if (characters.isEmpty()) {
+            "No characters stored"
+        } else {
+            formatListString(characters)
+        }
 
     fun numberOfCharacters(): Int { // added two helper methods to help with CharacterAPITest
         return characters.size
@@ -29,32 +46,43 @@ class CharacterAPI(serializerType: Serializer){
     fun findCharacter(index: Int): Character? {
         return if (isValidListIndex(index, characters)) {
             characters[index]
-        } else null
+        } else {
+            null
+        }
     }
 
-
     fun listActiveCharacters(): String =
-        if (numberOfActiveCharacters() == 0) "No active characters stored"
-        else formatListString(characters.filter { character -> !character.isCharacterArchived })
+        if (numberOfActiveCharacters() == 0) {
+            "No active characters stored"
+        } else {
+            formatListString(characters.filter { character -> !character.isCharacterArchived })
+        }
 
-
-    fun listArchivedCharacters(): String = // updated function since its now following sequences
-        if (numberOfArchivedCharacters() == 0) "No archived characters stored"
-        else formatListString(characters.filter { character -> character.isCharacterArchived })
+    fun listArchivedCharacters(): String =
+        // updated function since its now following sequences
+        if (numberOfArchivedCharacters() == 0) {
+            "No archived characters stored"
+        } else {
+            formatListString(characters.filter { character -> character.isCharacterArchived })
+        }
 
     fun numberOfArchivedCharacters(): Int = characters.count { character: Character -> character.isCharacterArchived }
 
-
     fun numberOfActiveCharacters(): Int = characters.count { character: Character -> !character.isCharacterArchived }
 
-
     fun listCharactersBySelectedRating(rating: Int): String =
-        if (numberOfCharactersByRating(rating) == 0) "No characters with rating $rating stored"
-        else formatListString(characters.filter { character -> character.characterRating == rating }) // updated listCharactersBySelectedRating because it was an older version from lab 05
-
+        if (numberOfCharactersByRating(rating) == 0) {
+            "No characters with rating $rating stored"
+        } else {
+            formatListString(
+                characters.filter {
+                        character ->
+                    character.characterRating == rating
+                },
+            ) // updated listCharactersBySelectedRating because it was an older version from lab 05
+        }
 
     fun numberOfCharactersByRating(rating: Int): Int = characters.count { character: Character -> character.characterRating == rating }
-
 
     fun findFavoriteCharacter(): Character? { // returns the character with the highest characterRating, or null if empty
         // uses maxByOrNull(), source https://kotlinlang.org/docs/collection-aggregate.html
@@ -76,17 +104,21 @@ class CharacterAPI(serializerType: Serializer){
         return characters.count { it.mangaSeries.equals(series, ignoreCase = true) }
     }
 
-
     fun deleteCharacter(indexToDelete: Int): Character? { // verifies index first, then removes and returns the deleted character (null if invalid)
         return if (isValidListIndex(indexToDelete, characters)) {
             characters.removeAt(indexToDelete)
-        } else null
+        } else {
+            null
+        }
     }
 
-    fun updateCharacter(indexToUpdate: Int, character: Character?): Boolean { // finds the character by index, then overwrites its fields with the new details
+    fun updateCharacter(
+        indexToUpdate: Int,
+        character: Character?,
+    ): Boolean { // finds the character by index, then overwrites its fields with the new details
         val foundCharacter = findCharacter(indexToUpdate)
 
-        if ((foundCharacter != null) && (character != null)) {// if the character exists, use the character details passed as parameters to update the found character in the ArrayList.
+        if ((foundCharacter != null) && (character != null)) { // if the character exists, use the character details passed as parameters to update the found character in the ArrayList.
 
             foundCharacter.characterName = character.characterName
             foundCharacter.characterRating = character.characterRating
@@ -95,7 +127,6 @@ class CharacterAPI(serializerType: Serializer){
             foundCharacter.powerLevel = character.powerLevel
             return true // update succeeded
         }
-
 
         return false // character not found, update failed
     }
@@ -115,7 +146,7 @@ class CharacterAPI(serializerType: Serializer){
 
     fun searchByCharacterName(searchName: String) =
         formatListString(
-            characters.filter { character -> character.characterName.contains(searchName, ignoreCase = true) }
+            characters.filter { character -> character.characterName.contains(searchName, ignoreCase = true) },
         )
 
     @Throws(Exception::class)
@@ -127,5 +158,4 @@ class CharacterAPI(serializerType: Serializer){
     fun store() {
         serializer.write(characters)
     }
-
 }
