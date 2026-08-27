@@ -7,7 +7,7 @@ plugins {
     application
 }
 group = "ie.setu"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -35,4 +35,19 @@ tasks.test {
     useJUnitPlatform()
     // report is always generated after tests run
     finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jar {
+    // for building a fat jar and include all dependencies
+    manifest {
+        attributes["Main-Class"] = "MainKt"
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(sourceSets.main.get().output)
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) }
+    })
 }
