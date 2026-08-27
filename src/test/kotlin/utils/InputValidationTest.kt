@@ -1,11 +1,10 @@
 package utils
 
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 class InputValidationTest {
-
     @Test
     fun `isValidRating returns true for ratings between 1 and 5`() {
         assertTrue(isValidRating(1))

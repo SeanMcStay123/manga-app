@@ -5,7 +5,8 @@ data class Character(
     var characterRating: Int,
     var mangaSeries: String,
     var isCharacterArchived: Boolean,
-    var characterDescription: String, // short bio for the character
-    var powerLevel: Double // decimal power/strength rating
-) {
-}
+    // short bio for the character
+    var characterDescription: String,
+    // decimal power/strength rating
+    var powerLevel: Double,
+)
