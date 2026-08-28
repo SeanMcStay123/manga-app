@@ -76,10 +76,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      # Ensures gradlew can be executed on the Linux runner
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
       # Runs the Gradle dokkaHtml task
       - name: Dokka with Gradle
         run: ./gradlew dokkaHtml
-
       # Builds a zip file with the KDoc generated website in it
       - name: Archive KDoc Documentation
         uses: actions/upload-artifact@v4.4.2
