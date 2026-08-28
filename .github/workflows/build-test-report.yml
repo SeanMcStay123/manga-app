@@ -28,10 +28,10 @@ jobs:
       # Ensures gradlew can be executed on the Linux runner
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      # Runs the Gradle build task, but without running the JUnit tests
-      - name: Run the Gradle Build
-        run: ./gradlew build -x test
+        
+      # Runs the Gradle test task
+      - name: Test with Gradle
+        run: ./gradlew test --tests "*"
 
       # Builds a 'fat' jar file with the dependencies from Gradle
       - name: Archive Jar with Dependencies
