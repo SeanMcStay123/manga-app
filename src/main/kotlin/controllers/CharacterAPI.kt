@@ -118,7 +118,7 @@ class CharacterAPI(serializerType: Serializer) {
         character: Character?,
     ): Boolean { // finds the character by index, then overwrites its fields with the new details
         val foundCharacter = findCharacter(indexToUpdate)
-// if the character exists, use the character details passed as parameters to update the found character in the ArrayList.
+        // if the character exists, use the character details passed as parameters to update the found character in the ArrayList.
         if ((foundCharacter != null) && (character != null)) { 
             foundCharacter.characterName = character.characterName
             foundCharacter.characterRating = character.characterRating
