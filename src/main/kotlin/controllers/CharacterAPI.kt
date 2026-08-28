@@ -11,7 +11,6 @@ import utils.isValidListIndex
  * @property serializer A serializer instance for reading and writing the characters.
  * @constructor Initializes the CharacterAPI with the specified [serializerType].
  */
-
 class CharacterAPI(serializerType: Serializer) {
     private var characters = ArrayList<Character>()
     private var serializer: Serializer = serializerType
@@ -27,7 +26,6 @@ class CharacterAPI(serializerType: Serializer) {
      * @param character The [Character] to be added.
      * @return `true` if the character was successfully added, `false` otherwise.
      */
-
     fun add(character: Character): Boolean {
         return characters.add(character) // ArrayList.add() is built-in, returns true if the item was added successfully
     }
@@ -101,11 +99,11 @@ class CharacterAPI(serializerType: Serializer) {
 
     fun numberOfCharactersInSeries(series: String): Int {
         // uses count() with a predicate, see: https://kotlinlang.org/docs/collection-aggregate.html
-        return characters.count { it.mangaSeries.equals(series, ignoreCase = true) }
+        return characters.count { it.mangaSeries.equals(other = series, ignoreCase = true) }
     }
-    
-// verifies index first, then removes and returns the deleted character (null if invalid)
-    fun deleteCharacter(indexToDelete: Int): Character? { 
+
+    // verifies index first, then removes and returns the deleted character (null if invalid)
+    fun deleteCharacter(indexToDelete: Int): Character? {
         return if (isValidListIndex(indexToDelete, characters)) {
             characters.removeAt(indexToDelete)
         } else {
@@ -116,10 +114,10 @@ class CharacterAPI(serializerType: Serializer) {
     fun updateCharacter(
         indexToUpdate: Int,
         character: Character?,
-    ): Boolean { // finds the character by index, then overwrites its fields with the new details
+    ): Boolean {
         val foundCharacter = findCharacter(indexToUpdate)
-        // if the character exists, use the character details passed as parameters to update the found character in the ArrayList.
-        if ((foundCharacter != null) && (character != null)) { 
+        // if the character exists, use the character details passed as parameters to update the found character in the ArrayList
+        if ((foundCharacter != null) && (character != null)) {
             foundCharacter.characterName = character.characterName
             foundCharacter.characterRating = character.characterRating
             foundCharacter.mangaSeries = character.mangaSeries
@@ -127,7 +125,6 @@ class CharacterAPI(serializerType: Serializer) {
             foundCharacter.powerLevel = character.powerLevel
             return true // update succeeded
         }
-
         return false // character not found, update failed
     }
 
