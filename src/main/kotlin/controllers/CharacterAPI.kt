@@ -103,8 +103,9 @@ class CharacterAPI(serializerType: Serializer) {
         // uses count() with a predicate, see: https://kotlinlang.org/docs/collection-aggregate.html
         return characters.count { it.mangaSeries.equals(series, ignoreCase = true) }
     }
-
-    fun deleteCharacter(indexToDelete: Int): Character? { // verifies index first, then removes and returns the deleted character (null if invalid)
+    
+// verifies index first, then removes and returns the deleted character (null if invalid)
+    fun deleteCharacter(indexToDelete: Int): Character? { 
         return if (isValidListIndex(indexToDelete, characters)) {
             characters.removeAt(indexToDelete)
         } else {
@@ -117,9 +118,8 @@ class CharacterAPI(serializerType: Serializer) {
         character: Character?,
     ): Boolean { // finds the character by index, then overwrites its fields with the new details
         val foundCharacter = findCharacter(indexToUpdate)
-
-        if ((foundCharacter != null) && (character != null)) { // if the character exists, use the character details passed as parameters to update the found character in the ArrayList.
-
+// if the character exists, use the character details passed as parameters to update the found character in the ArrayList.
+        if ((foundCharacter != null) && (character != null)) { 
             foundCharacter.characterName = character.characterName
             foundCharacter.characterRating = character.characterRating
             foundCharacter.mangaSeries = character.mangaSeries
